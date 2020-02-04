@@ -28,9 +28,7 @@ public class UserController {
     @RequestMapping(method = RequestMethod.POST)
     public Long register(@Valid @ModelAttribute("user") User user) {
 
-
         return userService.createUser(user);
     }
-
 
 }
