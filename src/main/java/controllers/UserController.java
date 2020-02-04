@@ -17,18 +17,10 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String register(@Valid @ModelAttribute("user") User user, BindingResult bindingResult) {
+    public Long register(@Valid @ModelAttribute("user") User user) {
 
-        if (bindingResult.hasErrors()) {
-            return "register";
-        }
 
-        if (userService.userExists(user.getUsername())) {
-            bindingResult.rejectValue("username", "username.exists", "Username is already taken!");
-            return "register";
-        }
-        userService.createUser(user);
-        return "redirect:/login";
+        return userService.createUser(user);
     }
 
 
