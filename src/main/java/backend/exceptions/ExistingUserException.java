@@ -1,4 +1,4 @@
-package exceptions;
+package backend.exceptions;
 
 public class ExistingUserException extends RuntimeException {
 

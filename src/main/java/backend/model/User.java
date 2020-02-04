@@ -1,7 +1,8 @@
-package model;
+package backend.model;
 
-import enums.Gender;
-import enums.Intrest;
+
+import backend.enums.Gender;
+import backend.enums.Intrest;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Entity;

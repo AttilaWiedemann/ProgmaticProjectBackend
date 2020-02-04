@@ -102,7 +102,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <fork>true</fork>
-                    <mainClass>ProgmaticProjectBackend/src/main/java/Application.java</mainClass>
+                    <mainClass>backend.Application.java</mainClass>
                 </configuration>
                 <executions>
                     <execution>

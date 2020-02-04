@@ -1,7 +1,7 @@
-package repos;
+package backend.repos;
 
 
-import model.User;
+import backend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 

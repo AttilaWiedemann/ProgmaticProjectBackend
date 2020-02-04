@@ -1,4 +1,4 @@
-package services;
+package backend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -8,8 +8,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmailServiceImpl{
 
+
     @Autowired
-    public JavaMailSender emailSender;
+    public EmailServiceImpl(JavaMailSender emailSender) {
+        this.emailSender = emailSender;
+    }
+
+    private JavaMailSender emailSender;
 
     public void sendSimpleMessage(
             String to, String subject, String text) {

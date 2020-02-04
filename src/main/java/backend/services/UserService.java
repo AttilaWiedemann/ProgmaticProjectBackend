@@ -1,14 +1,14 @@
-package services;
+package backend.services;
 
-import exceptions.ExistingUserException;
-import model.User;
+import backend.exceptions.ExistingUserException;
+import backend.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import repos.UserDao;
+import backend.repos.UserDao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

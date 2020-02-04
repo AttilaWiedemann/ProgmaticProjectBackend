@@ -1,4 +1,4 @@
-package dto;
+package backend.dto;
 
 public class MessageDto {
 
