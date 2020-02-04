@@ -1,0 +1,56 @@
+[33mcommit 2b1e90e3754c83722795720761d56d8b9ae96666[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Oglenor <dosaistvan158@gmail.com>
+Date:   Tue Feb 4 13:09:16 2020 +0100
+
+    add app properties
+
+[33mcommit 192b942b668e4e0797c4ddcbbfbefb8605857b5c[m
+Merge: e167ca7 9cd0873
+Author: AttilaWiedemann <attila.wiedemann@gmail.com>
+Date:   Tue Feb 4 13:01:52 2020 +0100
+
+    Merge branch 'master' of https://github.com/AttilaWiedemann/ProgmaticProjectBackend
+
+[33mcommit e167ca7e5e045c55130f5eb3849b97f8c335c126[m
+Author: AttilaWiedemann <attila.wiedemann@gmail.com>
+Date:   Tue Feb 4 13:01:45 2020 +0100
+
+    Updates pom.xml and application.properties
+
+[33mcommit 9cd08736b3c54c314060a1bb745efe7a1a0c519b[m
+Author: Maczák Patrik <maczakpatrik@gmail.com>
+Date:   Tue Feb 4 12:30:58 2020 +0100
+
+    UserDao update
+
+[33mcommit 3c1b46180ef871c793f4800a848634adfb8cf4df[m
+Author: AttilaWiedemann <attila.wiedemann@gmail.com>
+Date:   Tue Feb 4 12:21:49 2020 +0100
+
+    Adds EmailConfig with Email Service
+
+[33mcommit c2d0f76d6e4832b36b8e697658345eb31b0567fc[m
+Merge: ddcf953 eccfdaf
+Author: Maczák Patrik <maczakpatrik@gmail.com>
+Date:   Tue Feb 4 12:17:33 2020 +0100
+
+    Merge branch 'master' of https://github.com/AttilaWiedemann/ProgmaticProjectBackend
+
+[33mcommit ddcf9531e281dca0a6300571bb2d402a9f20b317[m
+Merge: e367a6c 15d354c
+Author: Maczák Patrik <maczakpatrik@gmail.com>
+Date:   Tue Feb 4 12:16:46 2020 +0100
+
+    merge
+
+[33mcommit eccfdafb241d69c87bedb67da3b2f9bf4de85414[m
+Author: Oglenor <dosaistvan158@gmail.com>
+Date:   Tue Feb 4 12:03:09 2020 +0100
+
+    add userService
+
+[33mcommit e367a6cbe2d312ad6aba956d466042619b739e92[m
+Author: Maczák Patrik <maczakpatrik@gmail.com>
+Date:   Tue Feb 4 11:55:47 2020 +0100
+
+    add UserDao
