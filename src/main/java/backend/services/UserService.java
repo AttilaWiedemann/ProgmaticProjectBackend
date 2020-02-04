@@ -18,12 +18,15 @@ import javax.persistence.PersistenceContext;
 public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
+    private EmailServiceImpl emailService;
+
 
     @PersistenceContext
     EntityManager em;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, EmailServiceImpl emailService) {
+        this.emailService = emailService;
         this.userRepository = userRepository;
     }
 
@@ -40,6 +43,7 @@ public class UserService implements UserDetailsService {
 
         if (userRepository.findUserByEmail(user.getEmail()).equals(null)){
             em.persist(user);
+            emailService.sendSimpleMessage("dosaistvan158@gmail.com", "WELCOME", "WELCOME");
             return userRepository.findUserByEmail(user.getEmail()).getId();
         }
         else{
