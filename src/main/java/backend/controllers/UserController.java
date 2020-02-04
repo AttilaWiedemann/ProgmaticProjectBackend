@@ -10,7 +10,7 @@ import backend.services.UserService;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/messages")
+@RequestMapping("/register")
 public class UserController {
 
     private UserService userService;
@@ -19,12 +19,13 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-
+/*
     @RequestMapping(method = RequestMethod.GET)
     public String showRegister(Model model) {
         model.addAttribute("user", new UserDto());
         return "register";
     }
+    */
 
     @RequestMapping(method = RequestMethod.POST)
     public Long register(@Valid @ModelAttribute("user") UserDto user) {
