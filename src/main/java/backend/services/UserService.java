@@ -18,7 +18,6 @@ public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
 
-
     @PersistenceContext
     EntityManager em;
 
@@ -38,7 +37,6 @@ public class UserService implements UserDetailsService {
             throw new ExistingUserException(user.getName());
         }
     }
-
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
