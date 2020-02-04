@@ -1,5 +1,6 @@
 package backend.services;
 
+import backend.dto.UserDto;
 import backend.exceptions.ExistingUserException;
 import backend.model.User;
 import backend.repos.UserRepository;
@@ -27,7 +28,15 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public Long createUser(User user){
+    public Long createUser(UserDto userDto){
+
+        User user = new User();
+        user.setBirthDate(userDto.getBirthDate());
+        user.setEmail(userDto.getEmail());
+        user.setGender(userDto.getGender());
+        user.setIntrest(userDto.getIntrest());
+        user.setName(userDto.getName());
+        user.setPassword(user.getPassword());
 
         if (userRepository.findUserByEmail(user.getEmail()).equals(null)){
             em.persist(user);
