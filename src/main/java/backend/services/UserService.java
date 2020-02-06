@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 @Service
@@ -54,9 +55,15 @@ public class UserService implements UserDetailsService {
         }
     }
 
+
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return null;
+        try{
+            return em.createQuery("select u from User u where u.name=:username", User.class)
+                    .setParameter("username", s).getSingleResult();
+        } catch(NoResultException e){
+            throw new UsernameNotFoundException("User not found: " + s);
+        }
     }
 
 
