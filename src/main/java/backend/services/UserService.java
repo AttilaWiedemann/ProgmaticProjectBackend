@@ -38,24 +38,23 @@ public class UserService implements UserDetailsService {
 
         User user = new User();
 
-        user.setName("Bala");
-        user.setPassword("alap");
+        user.setName(userDto.getName());
+        user.setPassword(userDto.getPassword());
         user.setEmail(userDto.getEmail());
         user.setBirthDate(userDto.getBirthDate());
 
-        //user.setGender(userDto.getGender());
-        //user.setIntrest(userDto.getIntrest());
+        user.setGender(userDto.getGender());
+        user.setIntrest(userDto.getIntrest());
 
 
-        //if (userRepository.findUserByEmail(user.getEmail()).equals(null)){
+        if (userRepository.findUserByEmail(user.getEmail()) == null) {
             em.persist(user);
-            emailService.sendSimpleMessage("dosaistvan158@gmail.com", "WELCOME", "WELCOME");
-        //    return userRepository.findUserByEmail(user.getEmail()).getId();
-        return userDto;
-        /*}
+            emailService.sendSimpleMessage(user.getEmail(), "WELCOME", "WELCOME");
+            return userDto;
+        }
         else{
             throw new ExistingUserException(user.getName());
-        }*/
+        }
     }
 
     @Override

@@ -32,6 +32,7 @@ public class User implements UserDetails {
     @NotEmpty
     private String password;
 
+    @Column(unique=true)
     @Email
     private String email;
 
@@ -51,7 +52,7 @@ public class User implements UserDetails {
 
 
 
-    /*
+
     //@NotEmpty
     //@NotNull
     @EnumNamePattern(regexp = "FÉRFI|NŐ")
@@ -60,8 +61,23 @@ public class User implements UserDetails {
     //@NotNull
     @EnumNamePattern(regexp = "FÉRFI|NŐ|MINDKETTŐ")
     private Intrest intrest;
-*/
 
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public Intrest getIntrest() {
+        return intrest;
+    }
+
+    public void setIntrest(Intrest intrest) {
+        this.intrest = intrest;
+    }
 
     public Long getId() {
         return id;

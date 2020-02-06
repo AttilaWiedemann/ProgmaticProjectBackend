@@ -22,13 +22,15 @@ public class UserController {
         this.userService = userService;
     }
 
+
+
     @RequestMapping(path = ("/rest/user"), method = RequestMethod.GET)
     public UserDto sampleUser() {
         UserDto sampleUser = new UserDto();
         sampleUser.setEmail("e@mail.cim");
         sampleUser.setBirthDate(LocalDate.now().minusDays(2));
-        //sampleUser.setGender(Gender.FÉRFI);
-        //sampleUser.setIntrest(Intrest.NŐ);
+        sampleUser.setGender(Gender.FÉRFI);
+        sampleUser.setIntrest(Intrest.NŐ);
         sampleUser.setName("Ildi bácsi");
         sampleUser.setPassword("dolgok");
         return sampleUser;
