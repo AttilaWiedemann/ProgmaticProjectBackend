@@ -36,8 +36,7 @@ public class UserController {
 
 
     @RequestMapping(path = ("/rest/register"), method = RequestMethod.POST)
-    public Long register(@Valid @ModelAttribute("UserDto") UserDto user) {
-
+    public UserDto register(@Valid @RequestBody UserDto user) {
         return userService.createUser(user);
     }
 

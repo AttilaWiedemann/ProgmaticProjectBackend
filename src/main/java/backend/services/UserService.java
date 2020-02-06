@@ -31,7 +31,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public Long createUser(UserDto userDto){
+    public UserDto createUser(UserDto userDto){
 
 
         //NotEmpty String name, @NotEmpty String password, @Email String email, LocalDate birthDate
@@ -50,7 +50,8 @@ public class UserService implements UserDetailsService {
         //if (userRepository.findUserByEmail(user.getEmail()).equals(null)){
             em.persist(user);
             emailService.sendSimpleMessage("dosaistvan158@gmail.com", "WELCOME", "WELCOME");
-            return userRepository.findUserByEmail(user.getEmail()).getId();
+        //    return userRepository.findUserByEmail(user.getEmail()).getId();
+        return userDto;
         /*}
         else{
             throw new ExistingUserException(user.getName());
