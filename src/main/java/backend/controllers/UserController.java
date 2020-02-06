@@ -1,9 +1,11 @@
 package backend.controllers;
 
 import backend.dto.UserDto;
+import backend.dto.UserProfileDto;
 import backend.enums.Gender;
 import backend.enums.Intrest;
 import backend.model.User;
+import backend.model.UserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +41,12 @@ public class UserController {
     public Long register(@Valid @ModelAttribute("UserDto") UserDto user) {
 
         return userService.createUser(user);
+    }
+
+    @RequestMapping(path = ("/rest/user/profile/{id}"), method = RequestMethod.POST)
+    public UserProfileDto userProfileDto() {
+        return userService.updateUser
+
     }
 
 }
