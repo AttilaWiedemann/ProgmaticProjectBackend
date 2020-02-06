@@ -33,22 +33,28 @@ public class UserService implements UserDetailsService {
     @Transactional
     public Long createUser(UserDto userDto){
 
-        User user = new User();
-        user.setBirthDate(userDto.getBirthDate());
-        user.setEmail(userDto.getEmail());
-        user.setGender(userDto.getGender());
-        user.setIntrest(userDto.getIntrest());
-        user.setName(userDto.getName());
-        user.setPassword(user.getPassword());
 
-        if (userRepository.findUserByEmail(user.getEmail()).equals(null)){
+        //NotEmpty String name, @NotEmpty String password, @Email String email, LocalDate birthDate
+
+        User user = new User();
+
+        user.setName("Bala");
+        user.setPassword("alap");
+        user.setEmail(userDto.getEmail());
+        user.setBirthDate(userDto.getBirthDate());
+
+        //user.setGender(userDto.getGender());
+        //user.setIntrest(userDto.getIntrest());
+
+
+        //if (userRepository.findUserByEmail(user.getEmail()).equals(null)){
             em.persist(user);
             emailService.sendSimpleMessage("dosaistvan158@gmail.com", "WELCOME", "WELCOME");
             return userRepository.findUserByEmail(user.getEmail()).getId();
-        }
+        /*}
         else{
             throw new ExistingUserException(user.getName());
-        }
+        }*/
     }
 
     @Override

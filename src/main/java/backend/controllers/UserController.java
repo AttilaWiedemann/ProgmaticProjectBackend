@@ -27,8 +27,8 @@ public class UserController {
         UserDto sampleUser = new UserDto();
         sampleUser.setEmail("e@mail.cim");
         sampleUser.setBirthDate(LocalDate.now().minusDays(2));
-        sampleUser.setGender(Gender.FÉRFI);
-        sampleUser.setIntrest(Intrest.NŐ);
+        //sampleUser.setGender(Gender.FÉRFI);
+        //sampleUser.setIntrest(Intrest.NŐ);
         sampleUser.setName("Ildi bácsi");
         sampleUser.setPassword("dolgok");
         return sampleUser;
@@ -36,7 +36,7 @@ public class UserController {
 
 
     @RequestMapping(path = ("/rest/register"), method = RequestMethod.POST)
-    public Long register(@ModelAttribute("user") UserDto user) {
+    public Long register(@Valid @ModelAttribute("UserDto") UserDto user) {
 
         return userService.createUser(user);
     }

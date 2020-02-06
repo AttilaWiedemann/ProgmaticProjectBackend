@@ -2,10 +2,12 @@ package backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+@EnableWebSecurity
 public class WebSecConfig extends WebSecurityConfigurerAdapter {
     @SuppressWarnings("deprecation")
     @Bean
@@ -27,7 +29,7 @@ public class WebSecConfig extends WebSecurityConfigurerAdapter {
                 //.logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
                 .and()
                 .authorizeRequests()
-                .antMatchers("/home", "/register").permitAll()
+                .antMatchers("/rest/**").permitAll()
                 .antMatchers("/webjars/bootstrap/**", "/webjars/jquery/**", "/webjars/popper.js/**").permitAll()
                 .antMatchers("/statistics").hasRole("ADMIN")
                 //.antMatchers("/users", "/user/changeRole").hasRole("ADMIN")

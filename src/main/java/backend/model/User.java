@@ -3,38 +3,69 @@ package backend.model;
 
 import backend.enums.Gender;
 import backend.enums.Intrest;
+import backend.utils.EnumNamePattern;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotBlank
     @NotEmpty
     private String name;
+
     @NotBlank
     @NotEmpty
     private String password;
+
     @Email
     private String email;
+
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate birthDate;
-    @NotBlank
-    @NotEmpty
+
+
+    public User() {
+    }
+
+    public User(@NotEmpty String name, @NotEmpty String password, @Email String email, LocalDate birthDate) {
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        this.birthDate = birthDate;
+    }
+
+
+
+    /*
+    //@NotEmpty
+    //@NotNull
+    @EnumNamePattern(regexp = "FÉRFI|NŐ")
     private Gender gender;
-    @NotBlank
-    @NotEmpty
+    //@NotEmpty
+    //@NotNull
+    @EnumNamePattern(regexp = "FÉRFI|NŐ|MINDKETTŐ")
     private Intrest intrest;
+*/
+
+
+    public Long getId() {
+        return id;
+    }
 
     public String getName() {
         return name;
@@ -42,10 +73,6 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public void setPassword(String password) {
@@ -68,27 +95,51 @@ public class User {
         this.birthDate = birthDate;
     }
 
-    public Gender getGender() {
-        return gender;
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
     }
 
-    public void setGender(Gender gender) {
-        this.gender = gender;
+    @ManyToMany
+    private Set<Authority> authorities = new HashSet<>();
+
+    public void addAuthority(Authority authority) {
+        authorities.add(authority);
     }
 
-    public Intrest getIntrest() {
-        return intrest;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
     }
 
-    public void setIntrest(Intrest intrest) {
-        this.intrest = intrest;
+    @Override
+    public String getPassword() {
+        return null;
     }
 
-    public Long getId() {
-        return id;
+    @Override
+    public String getUsername() {
+        return null;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
     }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+
 }
