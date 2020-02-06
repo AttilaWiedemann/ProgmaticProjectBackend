@@ -26,6 +26,9 @@ public class UserProfile {
     private boolean smoking;
 
     @OneToOne
+    private Image profileImage;
+
+    @OneToOne
     private User user;
 
     public Long getId() {
