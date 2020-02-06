@@ -39,6 +39,8 @@ public class User implements UserDetails {
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate birthDate;
 
+    @OneToOne
+    private UserProfile userProfile;
 
     public User() {
     }
@@ -50,7 +52,13 @@ public class User implements UserDetails {
         this.birthDate = birthDate;
     }
 
+    public UserProfile getUserProfile() {
+        return userProfile;
+    }
 
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
+    }
 
 
     //@NotEmpty
