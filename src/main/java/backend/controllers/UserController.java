@@ -46,11 +46,11 @@ public class UserController {
 
     @RequestMapping(path = ("/rest/user/profile/{id}"), method = RequestMethod.POST)
     public UserProfileDto userProfileDto(@RequestBody UserProfileDto userProfileDto, Long id) {
-        return userService.addOptionalFields(userProfileDto);
+        return userService.addOptionalFields(userProfileDto, id);
     }
     @RequestMapping(path = ("/rest/user/profile/{id}"), method = RequestMethod.PUT)
     public UserProfileDto updateUserProfile(@RequestBody UserProfileDto userProfileDto, Long id) {
-        return userService.addOptionalFields(userProfileDto);
+        return userService.addOptionalFields(userProfileDto, id);
     }
 
 }
