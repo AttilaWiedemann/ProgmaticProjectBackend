@@ -2,11 +2,13 @@ package backend.dto;
 
 import backend.enums.Gender;
 import backend.enums.Intrest;
+import backend.utils.EnumNamePattern;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class UserDto {
@@ -21,9 +23,15 @@ public class UserDto {
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate birthDate;
 
-    //private Gender gender;
-    //private Intrest intrest;
+    /*
+    @NotNull
+    @EnumNamePattern(regexp = "FÉRFI|NŐ")
+    private Gender gender;
 
+    @NotNull
+    @EnumNamePattern(regexp = "FÉRFI|NŐ|MINDKETTŐ")
+    private Intrest intrest;
+*/
     public UserDto() {
     }
 
@@ -58,7 +66,7 @@ public class UserDto {
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
-    /*
+/*
     public Gender getGender() {
         return gender;
     }
