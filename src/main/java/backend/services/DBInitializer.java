@@ -35,9 +35,9 @@ public class DBInitializer {
         long authorityCount = em.createQuery("select count(a) from Authority a", Long.class).getSingleResult();
         if (authorityCount == 0) {
             Authority userAuthority = new Authority("ROLE_USER");
-            Authority adminAuthority = new Authority("ROLE_ADMIN");
+            //Authority adminAuthority = new Authority("ROLE_ADMIN");
             em.persist(userAuthority);
-            em.persist(adminAuthority);
+            //em.persist(adminAuthority);
         }
     }
 
