@@ -23,6 +23,7 @@ public class UserDto {
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate birthDate;
 
+    /*
     @NotNull
     @EnumNamePattern(regexp = "FÉRFI|NŐ")
     private Gender gender;
@@ -30,7 +31,7 @@ public class UserDto {
     @NotNull
     @EnumNamePattern(regexp = "FÉRFI|NŐ|MINDKETTŐ")
     private Intrest intrest;
-
+*/
     public UserDto() {
     }
 
@@ -65,7 +66,7 @@ public class UserDto {
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
-
+/*
     public Gender getGender() {
         return gender;
     }
@@ -80,5 +81,5 @@ public class UserDto {
 
     public void setIntrest(Intrest intrest) {
         this.intrest = intrest;
-    }
+    }*/
 }

@@ -55,14 +55,14 @@ public class User implements UserDetails {
 
     //@NotEmpty
     //@NotNull
-    @EnumNamePattern(regexp = "FÉRFI|NŐ")
-    private Gender gender;
+    //@EnumNamePattern(regexp = "FÉRFI|NŐ")
+    //private Gender gender;
     //@NotEmpty
     //@NotNull
-    @EnumNamePattern(regexp = "FÉRFI|NŐ|MINDKETTŐ")
-    private Intrest intrest;
+    //@EnumNamePattern(regexp = "FÉRFI|NŐ|MINDKETTŐ")
+    //private Intrest intrest;
 
-
+/*
     public Gender getGender() {
         return gender;
     }
@@ -78,7 +78,7 @@ public class User implements UserDetails {
     public void setIntrest(Intrest intrest) {
         this.intrest = intrest;
     }
-
+*/
     public Long getId() {
         return id;
     }

@@ -43,8 +43,8 @@ public class UserService implements UserDetailsService {
         user.setEmail(userDto.getEmail());
         user.setBirthDate(userDto.getBirthDate());
 
-        user.setGender(userDto.getGender());
-        user.setIntrest(userDto.getIntrest());
+        //user.setGender(userDto.getGender());
+        //user.setIntrest(userDto.getIntrest());
 
 
         if (userRepository.findUserByEmail(user.getEmail()) == null) {
