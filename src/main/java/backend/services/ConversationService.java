@@ -19,13 +19,6 @@ public class ConversationService {
     @PersistenceContext
     EntityManager em;
 
-    MessageService messageService;
-
-    @Autowired
-    public ConversationService(MessageService messageService) {
-        this.messageService = messageService;
-    }
-
     @Transactional
     public Long createConversation(ConversationDto conversationDto, MessageDto messageDto) {
         String loggedInUserName = SecurityContextHolder.getContext().getAuthentication().getName();

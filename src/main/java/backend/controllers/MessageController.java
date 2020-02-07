@@ -18,14 +18,13 @@ public class MessageController {
     ConversationService conversationService;
 
     @Autowired
-    public MessageController(MessageService messageService, ConversationService conversationService) {
-        this.messageService = messageService;
+    public MessageController(ConversationService conversationService) {
         this.conversationService = conversationService;
     }
 
     @RequestMapping(path = ("/message"), method = RequestMethod.POST)
     public Conversation newMessage(Long convId, MessageDto messageDto) {
-        messageService.createMessage(convId, messageDto);
+        conversationService.createMessage(convId, messageDto);
         return conversationService.getConversation(convId);
     }
 
