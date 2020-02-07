@@ -23,10 +23,10 @@ public class MessageController {
         this.conversationService = conversationService;
     }
 
-    @RequestMapping(path = ("/message"), method = RequestMethod.POST)
-    public Conversation newMessage(Long convId, MessageDto messageDto) {
-        messageService.createMessage(convId, messageDto);
-        return conversationService.getConversation(convId);
-    }
+//    @RequestMapping(path = ("/message"), method = RequestMethod.POST)
+//    public Conversation newMessage(Long convId, MessageDto messageDto) {
+//        messageService.createMessage(convId, messageDto);
+//        return conversationService.getConversation(convId);
+//    }
 
 }
