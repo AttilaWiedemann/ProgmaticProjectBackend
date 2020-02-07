@@ -1,5 +1,6 @@
 package backend.controllers;
 
+import backend.dto.MessageDto;
 import backend.model.Conversation;
 import backend.model.Message;
 import backend.services.MessageService;
@@ -19,8 +20,10 @@ public class MessageController {
         this.messageService = messageService;
     }
 
-    @RequestMapping(path = ("/messages/{id}"), method = RequestMethod.GET)
-    public Conversation oneConversation(@PathVariable("id") Long convId) {
+    @RequestMapping(path = ("/message"), method = RequestMethod.POST)
+    public MessageDto newMessage(Long convId, MessageDto messageDto) {
+        messageService.createMessage(convId, messageDto);
         return null;
     }
+
 }
