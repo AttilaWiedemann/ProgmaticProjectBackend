@@ -7,23 +7,22 @@ import backend.repos.UserInterestRepository;
 import backend.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Service
 public class UserInterestService {
-    private UserInterestRepository userInterestRepository;
     private UserRepository userRepository;
     @PersistenceContext
     EntityManager em;
 
     @Autowired
-    public UserInterestService(UserInterestRepository userInterestRepository, UserRepository userRepository) {
-        this.userInterestRepository = userInterestRepository;
+    public UserInterestService( UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
+    @Transactional
     public UserInterestDto creatUserIterest(UserInterestDto userIntDto, Long id) {
 
         User user =  userRepository.findUserById(id);
