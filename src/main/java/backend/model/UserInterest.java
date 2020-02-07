@@ -10,6 +10,7 @@ public class UserInterest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long Id;
     private boolean movie;
     private boolean sport;
     private boolean music;
@@ -96,5 +97,13 @@ public class UserInterest {
 
     public void setPolitics(boolean politics) {
         this.politics = politics;
+    }
+
+    public Long getId() {
+        return Id;
+    }
+
+    public void setId(Long id) {
+        Id = id;
     }
 }
