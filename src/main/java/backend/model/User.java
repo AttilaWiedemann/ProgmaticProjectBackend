@@ -42,6 +42,9 @@ public class User implements UserDetails {
     @OneToOne
     private UserProfile userProfile;
 
+    @OneToOne
+    private UserInterest userInterest;
+
     public User() {
     }
 
@@ -165,5 +168,11 @@ public class User implements UserDetails {
         return true;
     }
 
+    public UserInterest getUserInterest() {
+        return userInterest;
+    }
 
+    public void setUserInterest(UserInterest userInterest) {
+        this.userInterest = userInterest;
+    }
 }
