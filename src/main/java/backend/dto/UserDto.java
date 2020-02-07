@@ -5,10 +5,7 @@ import backend.enums.Intrest;
 import backend.utils.EnumNamePattern;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 public class UserDto {
@@ -17,6 +14,7 @@ public class UserDto {
     private String name;
     @NotBlank
     @NotEmpty
+    //@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{6,16}$")
     private String password;
     @Email
     private String email;
