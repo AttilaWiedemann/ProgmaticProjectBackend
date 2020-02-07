@@ -42,6 +42,9 @@ public class User implements UserDetails {
     @OneToOne
     private UserProfile userProfile;
 
+    @OneToOne
+    private UserInterest userInterest;
+
     public User() {
     }
 
@@ -132,17 +135,17 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return authorities;
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return name;
     }
 
     @Override
@@ -165,5 +168,11 @@ public class User implements UserDetails {
         return true;
     }
 
+    public UserInterest getUserInterest() {
+        return userInterest;
+    }
 
+    public void setUserInterest(UserInterest userInterest) {
+        this.userInterest = userInterest;
+    }
 }
