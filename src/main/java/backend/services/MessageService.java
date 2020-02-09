@@ -16,7 +16,4 @@ import java.time.LocalDateTime;
 public class MessageService {
     @PersistenceContext
     EntityManager em;
-
-
-
 }

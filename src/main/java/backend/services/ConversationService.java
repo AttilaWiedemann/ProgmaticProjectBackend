@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ConversationService {
@@ -58,9 +60,27 @@ public class ConversationService {
         message.setCreationDate(LocalDateTime.now());
         message.setText(messageDto.getText());
         em.persist(message);
-
     }
 
+    @Transactional
+    public ArrayList<Conversation> getAllConversationOfUser() {
+        String loggedInUserName = SecurityContextHolder.getContext().getAuthentication().getName();
+        ArrayList<Conversation> all = getAllConversation();
+        ArrayList<Conversation> allOfOneUser = new ArrayList<>();
+        for (Conversation conversation : all) {
+            if (conversation.getConvPartner().equals(loggedInUserName)) {
+                allOfOneUser.add(conversation);
+            }
+            if (conversation.getConvStarter().equals(loggedInUserName)) {
+                allOfOneUser.add(conversation);
+            }
+        }
+        return allOfOneUser;
+    }
 
-
+    @Transactional
+    public ArrayList<Conversation> getAllConversation() {
+        List<Conversation> allConversation = em.createQuery("SELECT c FROM Conversation c").getResultList(); // átírni
+        return (ArrayList<Conversation>)allConversation;
+    }
 }

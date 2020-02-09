@@ -6,10 +6,7 @@ import backend.model.Conversation;
 import backend.model.Message;
 import backend.services.ConversationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,13 +16,22 @@ public class ConversationController {
 
     ConversationService conversationService;
 
+    //TODO hibaüzenetek
+    //TODO végpontok kiírása, jó-e két bemenő
+
     @Autowired
     public ConversationController(ConversationService conversationService) {
         this.conversationService = conversationService;
     }
 
-    @RequestMapping(path = ("/conversation"), method = RequestMethod.POST) // /{id}? talán nem
-    public Conversation newConversation(ConversationDto conversationDto, MessageDto messageDto) {
+    @RequestMapping(path = ("/conversation"), method = RequestMethod.GET)
+    public ArrayList<Conversation> allConversation() {
+        return conversationService.getAllConversationOfUser();
+
+    }
+
+    @RequestMapping(path = ("/conversation"), method = RequestMethod.POST) // TODO kellenek a RequestBody-k?
+    public Conversation newConversation(@RequestBody ConversationDto conversationDto,@RequestBody MessageDto messageDto) {
         Long convId = conversationService.createConversation(conversationDto, messageDto);
         return oneConversation(convId);
     }
