@@ -32,8 +32,8 @@ public class ConversationController {
 
     @RequestMapping(path = ("/conversation"), method = RequestMethod.POST) // TODO kellenek a RequestBody-k?
     public Conversation newConversation(@RequestBody ConversationDto conversationDto,@RequestBody MessageDto messageDto) {
-        Long convId = conversationService.createConversation(conversationDto, messageDto);
-        return oneConversation(convId);
+        //Long convId = conversationService.createConversation(conversationDto, messageDto);
+        return conversationService.createConversation(conversationDto, messageDto);/*oneConversation(convId)*/
     }
 
     @RequestMapping(path = ("/conversation/{id}"), method = RequestMethod.GET)

@@ -24,8 +24,7 @@ public class MessageController {
 
     @RequestMapping(path = ("/message"), method = RequestMethod.POST) //TODO kellenek a @RequestBody-k?
     public Conversation newMessage(@RequestBody Long convId,@RequestBody MessageDto messageDto) {
-        conversationService.createMessage(convId, messageDto);
-        return conversationService.getConversation(convId);
+        return conversationService.createMessage(convId, messageDto);
     }
 
 }
