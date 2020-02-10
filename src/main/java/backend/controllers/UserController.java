@@ -61,4 +61,10 @@ public class UserController {
     public UserInterestDto addUserInteresttoProfile(@RequestBody UserInterestDto userInterestDto, Long id){
         return userInterestService.creatUserIterest(userInterestDto,id);
     }
+
+    @GetMapping(path = "/home")
+    public String getHomePage(){
+        return "home";
+    }
+
 }

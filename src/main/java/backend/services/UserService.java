@@ -57,8 +57,8 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         try{
-            return em.createQuery("select u from User u left join fetch u.authorities where u.name=:username ", User.class)
-                    .setParameter("username", s).getSingleResult();
+            return em.createQuery("select u from User u left join fetch u.authorities where u.email=:email ", User.class)
+                    .setParameter("email", s).getSingleResult();
         } catch(NoResultException e){
             throw new UsernameNotFoundException("User not found: " + s);
         }

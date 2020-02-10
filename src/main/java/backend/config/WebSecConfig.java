@@ -35,6 +35,7 @@ public class WebSecConfig extends WebSecurityConfigurerAdapter {
                 .cors().and()
                 .formLogin()
                 //.loginPage("/login").permitAll()
+                .usernameParameter("email")
                 //.loginProcessingUrl("/login")
                 .successHandler(new AuthenticationSuccessHandler() {
                     @Override
