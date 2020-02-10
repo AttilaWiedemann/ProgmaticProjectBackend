@@ -5,14 +5,17 @@ import backend.dto.UserInterestDto;
 import backend.dto.UserProfileDto;
 import backend.enums.Gender;
 import backend.enums.Intrest;
+import backend.events.OnRegistrationCompleteEvent;
 import backend.model.User;
 import backend.model.UserInterest;
 import backend.model.UserProfile;
 import backend.services.UserInterestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import backend.services.UserService;
+import org.springframework.web.context.request.WebRequest;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -22,6 +25,9 @@ public class UserController {
 
     private UserService userService;
     private UserInterestService userInterestService;
+
+    @Autowired
+    ApplicationEventPublisher eventPublisher;
 
     @Autowired
     public UserController(UserService userService ,UserInterestService userInterestService) {
@@ -45,8 +51,22 @@ public class UserController {
 
 
     @RequestMapping(path = ("/rest/register"), method = RequestMethod.POST)
-    public UserDto register(@Valid @RequestBody UserDto user) {
-        return userService.createUser(user);
+    public UserDto register(@Valid @RequestBody UserDto user, WebRequest request) {
+        UserDto userDtoResponse = userService.createUser(user);
+        User unVerificatedUser = null;
+
+        if (userDtoResponse != null){
+            unVerificatedUser = userService.getUserByEmail(userDtoResponse.getEmail());
+        }
+
+        try {
+            String appUrl = request.getContextPath();
+            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(unVerificatedUser, request.getLocale(), appUrl));
+        } catch (Exception me) {
+
+        }
+
+        return userDtoResponse;
     }
 
     @RequestMapping(path = ("/rest/user/profile/{id}"), method = RequestMethod.POST)

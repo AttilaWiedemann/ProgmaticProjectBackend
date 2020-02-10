@@ -47,6 +47,9 @@ public class User implements UserDetails {
     @OneToOne
     private UserInterest userInterest;
 
+    @OneToOne
+    private VerificationToken token;
+
     public User() {
         this.enabled = false;
     }
@@ -94,6 +97,19 @@ public class User implements UserDetails {
         this.intrest = intrest;
     }
 */
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public VerificationToken getToken() {
+        return token;
+    }
+
+    public void setToken(VerificationToken token) {
+        this.token = token;
+    }
+
     public Long getId() {
         return id;
     }

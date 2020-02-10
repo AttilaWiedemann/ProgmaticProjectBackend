@@ -5,6 +5,7 @@ import backend.dto.UserProfileDto;
 import backend.exceptions.ExistingUserException;
 import backend.model.User;
 import backend.model.UserProfile;
+import backend.model.VerificationToken;
 import backend.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,14 +22,16 @@ public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
     private EmailServiceImpl emailService;
+    private TokenService tokenService;
 
     @PersistenceContext
     EntityManager em;
 
     @Autowired
-    public UserService(UserRepository userRepository, EmailServiceImpl emailService) {
+    public UserService(UserRepository userRepository, EmailServiceImpl emailService, TokenService tokenService) {
         this.emailService = emailService;
         this.userRepository = userRepository;
+        this.tokenService = tokenService;
     }
 
     @Transactional
@@ -112,4 +115,29 @@ public class UserService implements UserDetailsService {
         return userProfileDto;
     }
 
+    @Transactional
+    public User getUserByEmail(String eMail){
+        return userRepository.findUserByEmail(eMail);
+    }
+
+
+    @Transactional
+    public void createVerificationToken(User user, String token) {
+        VerificationToken vToken = new VerificationToken();
+        vToken.setToken(token);
+        vToken.setUser(user);
+        em.persist(vToken);
+        user.setToken(vToken);
+        em.persist(user);
+    }
+
+    public VerificationToken getVerificationToken(String token) {
+
+        return tokenService.getTokenByToken(token);
+
+    }
+
+    public void saveRegisteredUser(User user) {
+        em.persist(user);
+    }
 }
