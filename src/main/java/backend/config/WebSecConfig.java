@@ -48,7 +48,7 @@ public class WebSecConfig extends WebSecurityConfigurerAdapter {
                     @Override
                     public void onAuthenticationFailure(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
                         httpServletResponse.setStatus(403);
-                        httpServletResponse.getWriter().write("fail");
+                        httpServletResponse.getWriter().write("{\"response\": \"fail\"}");
                     }
                 })
                 .and()
