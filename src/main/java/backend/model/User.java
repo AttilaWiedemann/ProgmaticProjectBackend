@@ -36,6 +36,8 @@ public class User implements UserDetails {
     @Email
     private String email;
 
+    private boolean enabled;
+
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate birthDate;
 
@@ -46,6 +48,7 @@ public class User implements UserDetails {
     private UserInterest userInterest;
 
     public User() {
+        this.enabled = false;
     }
 
     public User(@NotEmpty String name, @NotEmpty String password, @Email String email, LocalDate birthDate) {
@@ -53,6 +56,7 @@ public class User implements UserDetails {
         this.password = password;
         this.email = email;
         this.birthDate = birthDate;
+        this.enabled = false;
     }
 
     public UserProfile getUserProfile() {
