@@ -35,19 +35,20 @@ public class WebSecConfig extends WebSecurityConfigurerAdapter {
                 .cors().and()
                 .formLogin()
                 //.loginPage("/login").permitAll()
+                .usernameParameter("email")
                 //.loginProcessingUrl("/login")
                 .successHandler(new AuthenticationSuccessHandler() {
                     @Override
                     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
                         httpServletResponse.setStatus(200);
-                        httpServletResponse.getWriter().write("ok");
+                        httpServletResponse.getWriter().write("{\"response\": \"ok\"}");
                     }
                 })
                 .failureHandler(new AuthenticationFailureHandler() {
                     @Override
                     public void onAuthenticationFailure(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
                         httpServletResponse.setStatus(403);
-                        httpServletResponse.getWriter().write("fail");
+                        httpServletResponse.getWriter().write("{\"response\": \"fail\"}");
                     }
                 })
                 .and()
