@@ -32,7 +32,7 @@ public class ConversationService {
         em.persist(newConversation);
         createMessage(newConversation.getId(), messageDto);
 
-        return getConversation(newConversation.getId());/*newConversation.getId()*/
+        return getConversation(newConversation.getId());
     }
 
     @Transactional
@@ -50,8 +50,7 @@ public class ConversationService {
         if (loggedInUserName.equals(conversation.getConvPartner())) {
             message.setAuthor(conversation.getConvPartner());
             message.setPartner(conversation.getConvStarter());
-        } else
-        if (loggedInUserName.equals(conversation.getConvStarter())) {
+        } else  if (loggedInUserName.equals(conversation.getConvStarter())) {
             message.setAuthor(conversation.getConvStarter());
             message.setPartner(conversation.getConvPartner());
         }
@@ -72,8 +71,7 @@ public class ConversationService {
         for (Conversation conversation : all) {
             if (conversation.getConvPartner().equals(loggedInUserName)) {
                 allOfOneUser.add(conversation);
-            } else
-            if (conversation.getConvStarter().equals(loggedInUserName)) {
+            } else if (conversation.getConvStarter().equals(loggedInUserName)) {
                 allOfOneUser.add(conversation);
             }
         }
@@ -82,7 +80,7 @@ public class ConversationService {
 
     @Transactional
     public ArrayList<Conversation> getAllConversation() {
-        List<Conversation> allConversation = em.createQuery("SELECT c FROM Conversation c").getResultList(); // átírni
+        List<Conversation> allConversation = em.createQuery("SELECT c FROM Conversation c", Conversation.class).getResultList(); // átírni
         return (ArrayList<Conversation>)allConversation;
     }
 }

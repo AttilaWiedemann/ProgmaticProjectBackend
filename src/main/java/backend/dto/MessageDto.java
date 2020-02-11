@@ -1,6 +1,12 @@
 package backend.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class MessageDto {
+
+    @NotNull
+    @NotBlank
     String text;
 
     public MessageDto() {

@@ -3,6 +3,8 @@ package backend.model;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
@@ -12,6 +14,9 @@ public class Message {
     private Long id;
     private String author;
     private String partner;
+
+    @NotNull
+    @NotBlank
     private String text;
     @DateTimeFormat(pattern = "yyyy/MMMM/dd HH:mm")
     private LocalDateTime creationDate;
