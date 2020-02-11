@@ -13,7 +13,7 @@ public class UserProfileWithVisibleFields {
     private int age;    //TODO kiszámolni a születési dátumból
     private String aboutMe;
     private String city;
-    private int height;
+    private double height;
     private Enum<BodyShape> bodyShape;
     private Enum<EyeColor> eyeColor;
     private Enum<HairColor> hairColor;
@@ -94,11 +94,11 @@ public class UserProfileWithVisibleFields {
         this.city = city;
     }
 
-    public int getHeight() {
+    public double getHeight() {
         return height;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(double height) {
         this.height = height;
     }
 
