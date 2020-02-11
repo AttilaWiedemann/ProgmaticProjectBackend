@@ -1,5 +1,5 @@
 package backend.enums;
 
-public enum Intrest {
-    FÉRFI,NŐ,MINDKETTŐ
+public enum Interest {
+    MAN,WOMAN,BOTH
 }

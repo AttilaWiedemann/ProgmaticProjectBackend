@@ -1,11 +1,31 @@
 package backend.model;
 
-import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
 
 @Entity
 public class Image {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+
+
+    private String url;
+
+    @Lob
+    private byte[] bytes;
+
+    private boolean profilPicture;
+
+    public boolean isProfilPicture() {
+        return profilPicture;
+    }
+
+    public void setProfilPicture(boolean profilPicture) {
+        this.profilPicture = profilPicture;
+    }
+
     public Long getId() {
         return id;
     }
@@ -14,13 +34,6 @@ public class Image {
         this.id = id;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-
-    private String url;
-
     public String getUrl() {
         return url;
     }
@@ -28,9 +41,6 @@ public class Image {
     public void setUrl(String url) {
         this.url = url;
     }
-
-    @Lob
-    private byte[] bytes;
 
 
 
