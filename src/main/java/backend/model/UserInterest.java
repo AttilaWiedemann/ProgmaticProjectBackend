@@ -1,5 +1,7 @@
 package backend.model;
 
+import backend.enums.Interest;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,10 +21,14 @@ public class UserInterest {
     private boolean travels;
     private boolean technology;
     private boolean politics;
+    private Enum<Interest> interest;
+    private int minAge;
+    private int maxAge;
 
     public UserInterest(boolean movies, boolean sports, boolean music,
                         boolean books, boolean culture,
-                        boolean travels, boolean technology, boolean politics) {
+                        boolean travels, boolean technology, boolean politics, Enum<Interest> interest,
+                        int minAge, int maxAge) {
         this.movies = movies;
         this.sports = sports;
         this.music = music;
@@ -31,6 +37,9 @@ public class UserInterest {
         this.travels = travels;
         this.technology = technology;
         this.politics = politics;
+        this.interest = interest;
+        this.minAge = minAge;
+        this.maxAge = maxAge;
     }
 
     public UserInterest(){}
@@ -105,5 +114,29 @@ public class UserInterest {
 
     public void setId(Long id) {
         Id = id;
+    }
+
+    public Enum<Interest> getInterest() {
+        return interest;
+    }
+
+    public void setInterest(Enum<Interest> interest) {
+        this.interest = interest;
+    }
+
+    public int getMinAge() {
+        return minAge;
+    }
+
+    public void setMinAge(int minAge) {
+        this.minAge = minAge;
+    }
+
+    public int getMaxAge() {
+        return maxAge;
+    }
+
+    public void setMaxAge(int maxAge) {
+        this.maxAge = maxAge;
     }
 }
