@@ -1,21 +1,14 @@
 package backend.controllers;
 
 import backend.dto.UserDto;
+import backend.dto.UserInterestDto;
 import backend.dto.UserProfileDto;
-<<<<<<< HEAD
-import backend.enums.Gender;
-import backend.enums.Intrest;
 import backend.events.OnRegistrationCompleteEvent;
-=======
->>>>>>> 6bf45725bfdba22ceae466cca84ec1ef71e93992
 import backend.model.User;
 import backend.repos.UserRepository;
+import backend.services.UserInterestService;
 import org.springframework.beans.factory.annotation.Autowired;
-<<<<<<< HEAD
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.ui.Model;
-=======
->>>>>>> 6bf45725bfdba22ceae466cca84ec1ef71e93992
 import org.springframework.web.bind.annotation.*;
 import backend.services.UserService;
 import org.springframework.web.context.request.WebRequest;
@@ -28,18 +21,18 @@ public class UserController {
 
     private UserService userService;
     private UserRepository userRepository;
+    private UserInterestService userInterestService;
+    private ApplicationEventPublisher eventPublisher;
 
     @Autowired
-<<<<<<< HEAD
-    ApplicationEventPublisher eventPublisher;
-
-    @Autowired
-    public UserController(UserService userService ,UserInterestService userInterestService) {
-=======
-    public UserController(UserService userService,UserRepository userRepository ) {
->>>>>>> 6bf45725bfdba22ceae466cca84ec1ef71e93992
+    public UserController(UserService userService,
+                          UserInterestService userInterestService,
+                          UserRepository userRepositor,
+                          ApplicationEventPublisher eventPublisher) {
         this.userService = userService;
         this.userRepository = userRepository;
+        this.userInterestService = userInterestService;
+        this.eventPublisher = eventPublisher;
     }
 
 
@@ -70,7 +63,6 @@ public class UserController {
         if (userDtoResponse != null){
             unVerificatedUser = userService.getUserByEmail(userDtoResponse.getEmail());
         }
-
         try {
             String appUrl = request.getContextPath();
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(unVerificatedUser, request.getLocale(), appUrl));
@@ -88,6 +80,10 @@ public class UserController {
     @RequestMapping(path = ("/rest/user/profile/{id}"), method = RequestMethod.PUT)
     public UserProfileDto updateUserProfile(@RequestBody UserProfileDto userProfileDto, Long id) {
         return userService.addOptionalFields(userProfileDto, id);
+    }
+    @RequestMapping(path =("/rest/user/profile/{id}/interest"),method = RequestMethod.POST)
+    public UserInterestDto addUserInteresttoProfile(@RequestBody UserInterestDto userInterestDto, Long id){
+        return userInterestService.creatUserIterest(userInterestDto,id);
     }
 
 }

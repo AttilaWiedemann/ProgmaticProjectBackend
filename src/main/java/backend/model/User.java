@@ -44,10 +44,9 @@ public class User implements UserDetails {
     @OneToOne
     private UserInterest userInterest;
 
-<<<<<<< HEAD
     @OneToOne
     private VerificationToken token;
-=======
+
     public Image getProfilePicture() {
         return profilePicture;
     }
@@ -69,7 +68,6 @@ public class User implements UserDetails {
 //    public void setImageList(List<Image> imageList) {
 //        this.imageList = imageList;
 //    }
->>>>>>> 6bf45725bfdba22ceae466cca84ec1ef71e93992
 
     public User() {
         this.enabled = false;
