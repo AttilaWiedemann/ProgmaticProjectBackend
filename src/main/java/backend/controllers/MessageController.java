@@ -4,7 +4,6 @@ import backend.dto.MessageDto;
 import backend.model.Conversation;
 import backend.model.Message;
 import backend.services.ConversationService;
-import backend.services.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;

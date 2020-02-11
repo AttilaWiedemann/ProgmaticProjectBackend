@@ -1,7 +1,7 @@
 package backend.enums;
 
 public enum Gender {
-    FÉRFI(1),NŐ(2);
+    MAN(1),WOMAN(2);
 
 
     private final int value;

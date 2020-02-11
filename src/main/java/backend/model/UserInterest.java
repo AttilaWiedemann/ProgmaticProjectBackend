@@ -11,44 +11,44 @@ public class UserInterest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
-    private boolean movie;
-    private boolean sport;
+    private boolean movies;
+    private boolean sports;
     private boolean music;
-    private boolean bookAndLiterature;
+    private boolean books;
     private boolean culture;
-    private boolean travel;
+    private boolean travels;
     private boolean technology;
     private boolean politics;
 
-    public UserInterest(boolean movie, boolean sport, boolean music,
-                        boolean bookAndLiterature, boolean culture,
-                        boolean travel, boolean technology, boolean politics) {
-        this.movie = movie;
-        this.sport = sport;
+    public UserInterest(boolean movies, boolean sports, boolean music,
+                        boolean books, boolean culture,
+                        boolean travels, boolean technology, boolean politics) {
+        this.movies = movies;
+        this.sports = sports;
         this.music = music;
-        this.bookAndLiterature = bookAndLiterature;
+        this.books = books;
         this.culture = culture;
-        this.travel = travel;
+        this.travels = travels;
         this.technology = technology;
         this.politics = politics;
     }
 
     public UserInterest(){}
 
-    public boolean isMovie() {
-        return movie;
+    public boolean isMovies() {
+        return movies;
     }
 
-    public void setMovie(boolean movie) {
-        this.movie = movie;
+    public void setMovies(boolean movies) {
+        this.movies = movies;
     }
 
-    public boolean isSport() {
-        return sport;
+    public boolean isSports() {
+        return sports;
     }
 
-    public void setSport(boolean sport) {
-        this.sport = sport;
+    public void setSports(boolean sports) {
+        this.sports = sports;
     }
 
     public boolean isMusic() {
@@ -59,12 +59,12 @@ public class UserInterest {
         this.music = music;
     }
 
-    public boolean isBookAndLiterature() {
-        return bookAndLiterature;
+    public boolean isBooks() {
+        return books;
     }
 
-    public void setBookAndLiterature(boolean bookAndLiterature) {
-        this.bookAndLiterature = bookAndLiterature;
+    public void setBooks(boolean books) {
+        this.books = books;
     }
 
     public boolean isCulture() {
@@ -75,12 +75,12 @@ public class UserInterest {
         this.culture = culture;
     }
 
-    public boolean isTravel() {
-        return travel;
+    public boolean isTravels() {
+        return travels;
     }
 
-    public void setTravel(boolean travel) {
-        this.travel = travel;
+    public void setTravels(boolean travels) {
+        this.travels = travels;
     }
 
     public boolean isTechnology() {

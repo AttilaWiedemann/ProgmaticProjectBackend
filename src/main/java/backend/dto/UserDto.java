@@ -1,8 +1,5 @@
 package backend.dto;
 
-import backend.enums.Gender;
-import backend.enums.Intrest;
-import backend.utils.EnumNamePattern;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;

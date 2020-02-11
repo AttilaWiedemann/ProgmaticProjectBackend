@@ -22,7 +22,7 @@ public class ConversationService {
     EntityManager em;
 
     @Transactional
-    public Long createConversation(ConversationDto conversationDto, MessageDto messageDto) {
+    public Conversation createConversation(ConversationDto conversationDto, MessageDto messageDto) {
         String loggedInUserName = SecurityContextHolder.getContext().getAuthentication().getName();
         Conversation newConversation = new Conversation();
 
@@ -32,7 +32,7 @@ public class ConversationService {
         em.persist(newConversation);
         createMessage(newConversation.getId(), messageDto);
 
-        return newConversation.getId();
+        return getConversation(newConversation.getId());/*newConversation.getId()*/
     }
 
     @Transactional
@@ -42,7 +42,7 @@ public class ConversationService {
     }
 
     @Transactional
-    public void createMessage(Long convId, MessageDto messageDto) {
+    public Conversation createMessage(Long convId, MessageDto messageDto) {
         String loggedInUserName = SecurityContextHolder.getContext().getAuthentication().getName();
         Message message = new Message();
         Conversation conversation = getConversation(convId);
@@ -50,7 +50,7 @@ public class ConversationService {
         if (loggedInUserName.equals(conversation.getConvPartner())) {
             message.setAuthor(conversation.getConvPartner());
             message.setPartner(conversation.getConvStarter());
-        }
+        } else
         if (loggedInUserName.equals(conversation.getConvStarter())) {
             message.setAuthor(conversation.getConvStarter());
             message.setPartner(conversation.getConvPartner());
@@ -60,6 +60,8 @@ public class ConversationService {
         message.setCreationDate(LocalDateTime.now());
         message.setText(messageDto.getText());
         em.persist(message);
+
+        return getConversation(convId);
     }
 
     @Transactional
@@ -70,7 +72,7 @@ public class ConversationService {
         for (Conversation conversation : all) {
             if (conversation.getConvPartner().equals(loggedInUserName)) {
                 allOfOneUser.add(conversation);
-            }
+            } else
             if (conversation.getConvStarter().equals(loggedInUserName)) {
                 allOfOneUser.add(conversation);
             }

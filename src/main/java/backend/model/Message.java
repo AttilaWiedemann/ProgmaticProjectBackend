@@ -16,6 +16,7 @@ public class Message {
     @DateTimeFormat(pattern = "yyyy/MMMM/dd HH:mm")
     private LocalDateTime creationDate;
 
+
     @ManyToOne
     private Conversation conversation;
 

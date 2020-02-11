@@ -1,9 +1,6 @@
 package backend.model;
 
 
-import backend.enums.Gender;
-import backend.enums.Intrest;
-import backend.utils.EnumNamePattern;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,10 +9,10 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -47,8 +44,32 @@ public class User implements UserDetails {
     @OneToOne
     private UserInterest userInterest;
 
+<<<<<<< HEAD
     @OneToOne
     private VerificationToken token;
+=======
+    public Image getProfilePicture() {
+        return profilePicture;
+    }
+
+    @OneToOne
+   private Image profilePicture;
+
+//    @ManyToOne
+//    private List<Image> imageList;
+
+    public void setProfilePicture(Image profilePicture) {
+      this.profilePicture = profilePicture;
+  }
+
+//    public List<Image> getImageList() {
+//        return imageList;
+//    }
+//
+//    public void setImageList(List<Image> imageList) {
+//        this.imageList = imageList;
+//    }
+>>>>>>> 6bf45725bfdba22ceae466cca84ec1ef71e93992
 
     public User() {
         this.enabled = false;
@@ -73,12 +94,12 @@ public class User implements UserDetails {
 
     //@NotEmpty
     //@NotNull
-    //@EnumNamePattern(regexp = "FÉRFI|NŐ")
+    //@EnumNamePattern(regexp = "MAN|WOMAN")
     //private Gender gender;
     //@NotEmpty
     //@NotNull
-    //@EnumNamePattern(regexp = "FÉRFI|NŐ|MINDKETTŐ")
-    //private Intrest intrest;
+    //@EnumNamePattern(regexp = "MAN|WOMAN|BOTH")
+    //private Interest interest;
 
 /*
     public Gender getGender() {
@@ -195,4 +216,11 @@ public class User implements UserDetails {
     public void setUserInterest(UserInterest userInterest) {
         this.userInterest = userInterest;
     }
+
+//    public void addPicture(Image image){
+//        imageList.add(image);
+//    }
+//    public Image showPicture(int index){
+//        return imageList.get(index);
+//    }
 }

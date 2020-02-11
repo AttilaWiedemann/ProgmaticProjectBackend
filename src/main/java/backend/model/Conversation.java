@@ -15,6 +15,7 @@ public class Conversation {
     private String convStarter;
     private String convPartner;
 
+
     public Conversation() {
     }
 
