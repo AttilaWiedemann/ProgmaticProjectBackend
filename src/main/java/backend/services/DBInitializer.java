@@ -55,7 +55,7 @@ public class DBInitializer {
 
             User user = new User("First User", "alap", "habi@mail.hu", LocalDate.now());
 
-
+            user.setEnabled(true);
 
             user.setAuthorities(Collections.singleton(userAuthority));
             //User admin = new User("admin", "password", "admin@gmail.com", LocalDate.of(1997, 6, 11));
