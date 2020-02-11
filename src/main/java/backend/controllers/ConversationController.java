@@ -24,7 +24,7 @@ public class ConversationController {
         this.conversationService = conversationService;
     }
 
-    @RequestMapping(path = ("/conversation"), method = RequestMethod.GET)
+    @RequestMapping(path = ("/conversation"), method = RequestMethod.GET) // bejelentkezetthez tartozó üzenetek
     public ArrayList<Conversation> allConversation() {
         return conversationService.getAllConversationOfUser();
 
@@ -36,7 +36,7 @@ public class ConversationController {
         return conversationService.createConversation(conversationDto, messageDto);/*oneConversation(convId)*/
     }
 
-    @RequestMapping(path = ("/conversation/{id}"), method = RequestMethod.GET)
+    @RequestMapping(path = ("/conversation/{id}"), method = RequestMethod.GET) // id-s linkkel, alapján
     public Conversation oneConversation(@PathVariable("id") Long id) {
         return conversationService.getConversation(id);
     }
