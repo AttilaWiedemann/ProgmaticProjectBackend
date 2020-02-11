@@ -1,5 +1,10 @@
 package backend.model;
 
+import backend.enums.BodyShape;
+import backend.enums.EyeColor;
+import backend.enums.HairColor;
+import backend.enums.Horoscope;
+
 import javax.persistence.*;
 
 @Entity
@@ -13,7 +18,7 @@ public class UserProfile {
 
     private String city;
 
-    private int height;
+    private double height;
 
     private Enum bodyShape;
 
@@ -55,11 +60,11 @@ public class UserProfile {
         this.city = city;
     }
 
-    public int getHeight() {
+    public double getHeight() {
         return height;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(double height) {
         this.height = height;
     }
 
@@ -104,5 +109,16 @@ public class UserProfile {
     }
 
     public UserProfile() {
+    }
+
+    public UserProfile(String aboutMe, String city, double height, Enum<BodyShape> bodyShape, Enum<EyeColor> eyeColor,
+                       Enum<HairColor> hairColor, Enum<Horoscope> horoscope, boolean isSmoking){
+        this.aboutMe = aboutMe;
+        this.city = city;
+        this.height = height;
+        this.bodyShape = bodyShape;
+        this.hairColor = hairColor;
+        this.horoscope = horoscope;
+        this.smoking = isSmoking;
     }
 }
