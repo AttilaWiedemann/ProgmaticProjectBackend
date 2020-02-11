@@ -1,5 +1,6 @@
 package backend.controllers;
 
+import backend.dto.UserProfileWithVisibleFields;
 import backend.services.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,8 +16,8 @@ public class ProfileController {
         this.profileService = profileService;
     }
 
-    /*@RequestMapping(path = ("/myProfile"), method = RequestMethod.GET)
-    public UserDto2 myProfile() {
+    @RequestMapping(path = ("/myProfile"), method = RequestMethod.GET)
+    public UserProfileWithVisibleFields myProfile() {
         return profileService.getProfileInfos();
-    }*/
+    }
 }

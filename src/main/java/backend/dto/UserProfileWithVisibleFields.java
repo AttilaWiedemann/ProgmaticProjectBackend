@@ -29,6 +29,11 @@ public class UserProfileWithVisibleFields {
     private boolean likesPolitics;
 
     public UserProfileWithVisibleFields(){}
+    public UserProfileWithVisibleFields(LocalDate birthDate){
+        long years = java.time.temporal.ChronoUnit.YEARS.between( birthDate , LocalDate.now() );
+        this.horoscopeEnum = Horoscope.HoroscopeFromBirthDate(birthDate);
+    }
+
 
     //A konstruktor az kort és a horoszkópot a születési dátumból számolja ki
     public UserProfileWithVisibleFields(String name, LocalDate birthDate, String aboutMe, String city, int height,
