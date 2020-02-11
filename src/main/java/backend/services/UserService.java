@@ -61,6 +61,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
+        //TODO
         try {
             User user = em.createQuery("select u from User u left join fetch u.authorities where u.email=:email ", User.class)
                     .setParameter("email", mail).getSingleResult();
