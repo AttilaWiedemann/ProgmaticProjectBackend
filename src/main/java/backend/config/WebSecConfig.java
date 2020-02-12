@@ -60,6 +60,7 @@ public class WebSecConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/rest/**").permitAll()
                 .antMatchers("/webjars/bootstrap/**", "/webjars/jquery/**", "/webjars/popper.js/**").permitAll()
                 .antMatchers("/statistics").hasRole("ADMIN")
+                .antMatchers("/regitrationConfirm").permitAll()
                 //.antMatchers("/users", "/user/changeRole").hasRole("ADMIN")
                 .anyRequest().authenticated();
     }

@@ -44,7 +44,7 @@ public class User implements UserDetails {
     @OneToOne
     private UserInterest userInterest;
 
-    @OneToOne
+    @OneToOne(mappedBy = "user")
     private VerificationToken token;
 
     public Image getProfilePicture() {

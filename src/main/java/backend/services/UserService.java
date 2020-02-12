@@ -147,7 +147,9 @@ public class UserService implements UserDetailsService {
 
     }
 
+    @Transactional
     public void saveRegisteredUser(User user) {
+        user.setEnabled(true);
         em.persist(user);
     }
 }

@@ -48,8 +48,8 @@ public class RegistrationController {
             return "redirect:/badUser.html?lang=" + locale.getLanguage();
         }
          */
-        user.setEnabled(true);
+        //user.setEnabled(true);
         userService.saveRegisteredUser(user);
-        return "redirect:/login";
+        return "redirect: http://intense-meadow-41798.herokuapp.com/login";
     }
 }
