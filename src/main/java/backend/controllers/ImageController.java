@@ -38,6 +38,7 @@ public class ImageController {
         Image image = imageRepository.findById(id).get();
         return image.getBytes();
     }
+
     @GetMapping(path = "/rest/{userid}/profilpicture/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] showProfilePicture(@PathVariable("id") int id, @PathVariable("userid") Long userid){
         return userRepository.findUserById(userid).getProfilePicture().getBytes();

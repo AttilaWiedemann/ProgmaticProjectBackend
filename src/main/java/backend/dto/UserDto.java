@@ -15,6 +15,7 @@ public class UserDto {
     private String password;
     @Email
     private String email;
+
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate birthDate;
 
