@@ -6,7 +6,7 @@ public class ProfileFilterDto {
     private int maxAge;
     private String lookingFor;  //TODO ez alapján enumot lehet majd csinálni
     private int statingNumber;
-    private int endingNumber;
+    private int endingNumber;   //nem a végszámmal, hanem a találatok számával kell majd a between lekérdezés
 
     public ProfileFilterDto(int minAge, int maxAge, String lookingFor, int statingNumber, int endingNumber) {
         this.minAge = minAge;

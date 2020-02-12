@@ -61,7 +61,7 @@ public class DBInitializer {
             user.setEnabled(true);
 
             UserProfile userProfile = new UserProfile("Szeretem a sajtot", "Tahitótfalu", 2,
-                    BodyShape.M, EyeColor.BROWN, HairColor.RED, Horoscope.GEMINI, false);
+                    BodyShape.M, EyeColor.BROWN, HairColor.RED, Horoscope.GEMINI, false, Gender.MAN);
             UserInterest userInterest = new UserInterest(true, true, false, false, true, true, false, false, Interest.WOMAN, 20, 25);
 
             user.setUserInterest(userInterest);

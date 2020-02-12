@@ -1,9 +1,6 @@
 package backend.model;
 
-import backend.enums.BodyShape;
-import backend.enums.EyeColor;
-import backend.enums.HairColor;
-import backend.enums.Horoscope;
+import backend.enums.*;
 
 import javax.persistence.*;
 
@@ -27,6 +24,8 @@ public class UserProfile {
     private Enum hairColor;
 
     private Enum horoscope;
+
+    private String gender;
 
     private boolean smoking;
 
@@ -111,8 +110,16 @@ public class UserProfile {
     public UserProfile() {
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(Enum gender) {
+        this.gender = gender.toString();
+    }
+
     public UserProfile(String aboutMe, String city, double height, Enum<BodyShape> bodyShape, Enum<EyeColor> eyeColor,
-                       Enum<HairColor> hairColor, Enum<Horoscope> horoscope, boolean isSmoking){
+                       Enum<HairColor> hairColor, Enum<Horoscope> horoscope, boolean isSmoking, Enum<Gender> gender){
         this.aboutMe = aboutMe;
         this.city = city;
         this.height = height;
@@ -120,5 +127,6 @@ public class UserProfile {
         this.hairColor = hairColor;
         this.horoscope = horoscope;
         this.smoking = isSmoking;
+        this.gender = gender.toString();
     }
 }

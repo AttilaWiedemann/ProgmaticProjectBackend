@@ -1,5 +1,6 @@
 package backend.controllers;
 
+import backend.dto.FilterDto;
 import backend.dto.UserDto;
 import backend.dto.UserInterestDto;
 import backend.dto.UserProfileDto;
@@ -52,6 +53,14 @@ public class UserController {
         sampleUser.setName("Ildi bácsi");
         sampleUser.setPassword("dolgok");
         return sampleUser;
+    }
+
+    @RequestMapping(path = ("/rest/test"), method = RequestMethod.GET)
+    public FilterDto sampleFilter(){
+        FilterDto sampleFilter = new FilterDto();
+        sampleFilter.setMinAge(0);
+        sampleFilter.setMaxAge(100);
+        return sampleFilter;
     }
 
 

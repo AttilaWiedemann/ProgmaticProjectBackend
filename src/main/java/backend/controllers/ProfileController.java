@@ -28,8 +28,13 @@ public class ProfileController {
 
     @RequestMapping(path = ("/rest/profiles"), method = RequestMethod.GET)
     public List<UserProfileWithVisibleFields> getUserList(@RequestBody ProfileFilterDto filterDto){
-        //TODO
-        return null;
+        return profileService.listingExistingUsers(filterDto);
+    }
+
+    @RequestMapping(path = ("rest/myProfile"), method = RequestMethod.POST)
+    public UserProfileWithVisibleFields updateMyProfile(@RequestBody UserProfileWithVisibleFields updatedProfile){
+        //TODO profileservice updatelje az adatbázisban szereplő entitásokat
+        return updatedProfile;
     }
 
 }
