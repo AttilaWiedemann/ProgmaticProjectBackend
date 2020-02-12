@@ -10,6 +10,7 @@ import backend.repos.UserRepository;
 import backend.services.UserInterestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import backend.services.UserService;
 import org.springframework.web.context.request.WebRequest;
@@ -37,6 +38,12 @@ public class UserController {
     }
 
 
+
+    @GetMapping("/get")
+    public Long get(){
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return user.getId();
+    }
 
     @GetMapping("/user/{id}")
     public User getUser(@PathVariable Long id){
