@@ -128,5 +128,6 @@ public class UserProfile {
         this.horoscope = horoscope;
         this.smoking = isSmoking;
         this.gender = gender.toString();
+        this.eyeColor = eyeColor;
     }
 }
