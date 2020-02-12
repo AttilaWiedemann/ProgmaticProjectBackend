@@ -100,7 +100,8 @@ public class ProfileService {
             userStream.filter(u -> u.getUserProfile().getGender().equals(finalLookingFor));
         }*/
 
-        return getResultList(userList1);
+        //return getResultList(userList1);
+        return getResultList(em.createQuery("select u from User u").getResultList());
     }
 
     private int getYearsBetweenDates(LocalDate birthDate){

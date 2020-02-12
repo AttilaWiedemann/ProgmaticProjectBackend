@@ -26,7 +26,7 @@ public class ProfileController {
         return profileService.getProfileInfos();
     }
 
-    @RequestMapping(path = ("/rest/profiles"), method = RequestMethod.GET)
+    @RequestMapping(path = ("/rest/profiles"), method = RequestMethod.POST)
     public List<UserProfileWithVisibleFields> getUserList(@RequestBody ProfileFilterDto filterDto){
         return profileService.listingExistingUsers(filterDto);
     }
