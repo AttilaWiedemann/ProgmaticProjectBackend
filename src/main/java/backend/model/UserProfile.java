@@ -25,7 +25,7 @@ public class UserProfile {
 
     private Enum horoscope;
 
-    private String gender;
+    private Enum<Gender> gender;
 
     private boolean smoking;
 
@@ -110,12 +110,12 @@ public class UserProfile {
     public UserProfile() {
     }
 
-    public String getGender() {
+    public Enum<Gender> getGender() {
         return gender;
     }
 
     public void setGender(Enum gender) {
-        this.gender = gender.toString();
+        this.gender = gender;
     }
 
     public UserProfile(String aboutMe, String city, double height, Enum<BodyShape> bodyShape, Enum<EyeColor> eyeColor,
@@ -127,7 +127,7 @@ public class UserProfile {
         this.hairColor = hairColor;
         this.horoscope = horoscope;
         this.smoking = isSmoking;
-        this.gender = gender.toString();
+        this.gender = gender;
         this.eyeColor = eyeColor;
     }
 }

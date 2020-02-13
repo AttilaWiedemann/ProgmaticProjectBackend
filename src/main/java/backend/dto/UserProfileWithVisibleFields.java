@@ -1,9 +1,6 @@
 package backend.dto;
 
-import backend.enums.BodyShape;
-import backend.enums.EyeColor;
-import backend.enums.HairColor;
-import backend.enums.Horoscope;
+import backend.enums.*;
 
 import java.time.LocalDate;
 
@@ -16,6 +13,11 @@ public class UserProfileWithVisibleFields {
     private String city;
     private double height;
     private Enum<BodyShape> bodyShape;
+    private Enum<Gender> gender;
+    private Enum<Interest> interest;
+    private LocalDate birthDate;
+    private int minAge;
+    private int maxAge;
     private Enum<EyeColor> eyeColor;
     private Enum<HairColor> hairColor;
     private Enum<Horoscope> horoscopeEnum;   //TODO Horoszkóp kiszámolása konstruktorban
@@ -39,9 +41,11 @@ public class UserProfileWithVisibleFields {
     //A konstruktor az kort és a horoszkópot a születési dátumból számolja ki
     public UserProfileWithVisibleFields(long id, String name, LocalDate birthDate, String aboutMe, String city, int height,
                                         Enum<BodyShape> bodyShape, Enum<EyeColor> eyeColor, Enum<HairColor> hairColor,
+                                        Enum<Gender> gender, Enum<Interest> interest,
                                         boolean isSmoking, String imgUrl,
                                         boolean likesMovies, boolean likesSports, boolean likesMusic, boolean likesBooks,
-                                        boolean likesCulture, boolean likesTravels, boolean likesPolitics) {
+                                        boolean likesCulture, boolean likesTravels, boolean likesPolitics,
+                                        int minAge, int maxAge) {
         this.id = id;
         this.name = name;
         long years = java.time.temporal.ChronoUnit.YEARS.between( birthDate , LocalDate.now() );
@@ -62,6 +66,11 @@ public class UserProfileWithVisibleFields {
         this.likesCulture = likesCulture;
         this.likesTravels = likesTravels;
         this.likesPolitics = likesPolitics;
+        this.minAge = minAge;
+        this.maxAge = maxAge;
+        this.birthDate = birthDate;
+        this.gender = gender;
+        this.interest = interest;
     }
 
     public String getName() {
@@ -214,5 +223,45 @@ public class UserProfileWithVisibleFields {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Enum<Gender> getGender() {
+        return gender;
+    }
+
+    public void setGender(Enum<Gender> gender) {
+        this.gender = gender;
+    }
+
+    public Enum<Interest> getInterest() {
+        return interest;
+    }
+
+    public void setInterest(Enum<Interest> interest) {
+        this.interest = interest;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public int getMinAge() {
+        return minAge;
+    }
+
+    public void setMinAge(int minAge) {
+        this.minAge = minAge;
+    }
+
+    public int getMaxAge() {
+        return maxAge;
+    }
+
+    public void setMaxAge(int maxAge) {
+        this.maxAge = maxAge;
     }
 }

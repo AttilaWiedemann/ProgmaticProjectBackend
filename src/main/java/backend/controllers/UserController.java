@@ -29,7 +29,7 @@ public class UserController {
     @Autowired
     public UserController(UserService userService,
                           UserInterestService userInterestService,
-                          UserRepository userRepositor,
+                          UserRepository userRepository,
                           ApplicationEventPublisher eventPublisher) {
         this.userService = userService;
         this.userRepository = userRepository;

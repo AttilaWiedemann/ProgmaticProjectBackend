@@ -37,21 +37,30 @@ public class ProfileService {
     //default = 20db
     @Transactional
     public List<UserProfileWithVisibleFields> listingExistingUsers(ProfileFilterDto profileFilter){
-        /*
+
         User currentUser = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     //CriteriaBuilder létrehozása
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<User> userQuery = criteriaBuilder.createQuery(User.class);
         Root<User> rootUser = userQuery.from(User.class);
     //Criteriabuilderes szűrések:
+        //idősebb, mint a filter minimum életkor
+        System.out.println(profileFilter.getMinAge());
+        profileFilter.setMinAge(-20);
         userQuery.select(rootUser).where(criteriaBuilder
-                .greaterThan(rootUser.get(User_.BIRTH_DATE), LocalDateTime.now().minusYears(profileFilter.getMinAge())));
-        */
+                .lessThan(rootUser.get(User_.BIRTH_DATE), LocalDate.now().minusYears(profileFilter.getMinAge())));
+        //fiatalabb, mint a filter maximum életkor
+        userQuery.select(rootUser).where(criteriaBuilder
+                .greaterThan(rootUser.get(User_.BIRTH_DATE), LocalDate.now().minusYears(profileFilter.getMaxAge())));
 
+/*
         List<User> userList = em.createQuery("select u from User u").getResultList();
         List<User> userList1 = userList.stream()
                 .filter(user -> getYearsBetweenDates(user.getBirthDate()) >= profileFilter.getMinAge() && getYearsBetweenDates(user.getBirthDate()) <= profileFilter.getMaxAge()).collect(Collectors.toList());
         return getResultList(userList1);
+ */
+        List<User> resultList = em.createQuery(userQuery).getResultList();
+        return getResultList(resultList);
     }
 
     private int getYearsBetweenDates(LocalDate birthDate){
@@ -80,6 +89,7 @@ public class ProfileService {
             userProfileWithVisibleFields.setHairColor(user.getUserProfile().getHairColor());
             userProfileWithVisibleFields.setHeight(user.getUserProfile().getHeight());
             userProfileWithVisibleFields.setSmoking(user.getUserProfile().isSmoking());
+            userProfileWithVisibleFields.setGender(user.getUserProfile().getGender());
         }
         if(user.getUserInterest() != null) {
             userProfileWithVisibleFields.setLikesBooks(user.getUserInterest().isBooks());
@@ -89,9 +99,13 @@ public class ProfileService {
             userProfileWithVisibleFields.setLikesPolitics(user.getUserInterest().isPolitics());
             userProfileWithVisibleFields.setLikesSports(user.getUserInterest().isSports());
             userProfileWithVisibleFields.setLikesTravels(user.getUserInterest().isTravels());
+            userProfileWithVisibleFields.setInterest(user.getUserInterest().getInterest());
+            userProfileWithVisibleFields.setMinAge(user.getUserInterest().getMinAge());
+            userProfileWithVisibleFields.setMaxAge(user.getUserInterest().getMaxAge());
         }
         userProfileWithVisibleFields.setName(user.getName());
         userProfileWithVisibleFields.setId(user.getId());
+        userProfileWithVisibleFields.setBirthDate(user.getBirthDate());
         //userProfileWithVisibleFields.setImgUrl(user.getProfilePicture().getUrl());
         return userProfileWithVisibleFields;
     }
