@@ -3,11 +3,13 @@ package backend.services;
 import backend.dto.UserDto;
 import backend.dto.UserProfileDto;
 import backend.exceptions.ExistingUserException;
+import backend.exceptions.NotExistingUserException;
 import backend.model.User;
 import backend.model.UserProfile;
 import backend.model.VerificationToken;
 import backend.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -34,30 +36,6 @@ public class UserService implements UserDetailsService {
         this.tokenService = tokenService;
     }
 
-    @Transactional
-    public UserDto createUser(UserDto userDto){
-
-        //NotEmpty String name, @NotEmpty String password, @Email String email, LocalDate birthDate
-
-        User user = new User();
-        user.setName(userDto.getName());
-        user.setPassword(userDto.getPassword());
-        user.setEmail(userDto.getEmail());
-        user.setBirthDate(userDto.getBirthDate());
-
-        //user.setGender(userDto.getGender());
-        //user.setIntrest(userDto.getIntrest());
-
-        if (userRepository.findUserByEmail(user.getEmail()) == null) {
-            em.persist(user);
-            emailService.sendSimpleMessage(user.getEmail(), "WELCOME", "WELCOME");
-            return userDto;
-        }
-        else{
-            throw new ExistingUserException(user.getName());
-        }
-    }
-
 
     @Override
     public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
@@ -79,47 +57,50 @@ public class UserService implements UserDetailsService {
 
 
     @Transactional
-    public UserProfileDto addOptionalFields(UserProfileDto userProfileDto, Long id){
-
-        User user = userRepository.findUserById(id);
-
+    public User getUser(Long userId){
+        User user = userRepository.findUserById(userId);
         if (user != null){
-            if (user.getUserProfile() == null){
-                UserProfile userProfile = new UserProfile();
+            return user;
+        }
+        else {
+            throw new NotExistingUserException("Not existing User.");
+        }
+    }
 
-                userProfile.setAboutMe(userProfileDto.getAboutMe());
-                userProfile.setBodyShape(userProfileDto.getBodyShape());
-                userProfile.setCity(userProfileDto.getCity());
-                userProfile.setEyeColor(userProfileDto.getEyeColor());
-                userProfile.setHairColor(userProfileDto.getHairColor());
-                userProfile.setHeight(userProfileDto.getHeight());
-                userProfile.setHoroscope(userProfileDto.getHoroscope());
-                userProfile.setSmoking(userProfileDto.isSmoking());
+    @Transactional
+    public User createUser(UserDto userDto){
 
-                em.persist(userProfile);
-                user.setUserProfile(userProfile);
-                em.persist(user);
-            }
-            else{
-
-                UserProfile userProfile = user.getUserProfile();
-
-                userProfile.setSmoking(userProfileDto.isSmoking());
-                userProfile.setHoroscope(userProfileDto.getHoroscope());
-                userProfile.setHeight(userProfileDto.getHeight());
-                userProfile.setHairColor(userProfileDto.getHairColor());
-                userProfile.setEyeColor(userProfileDto.getEyeColor());
-                userProfile.setCity(userProfileDto.getCity());
-                userProfile.setBodyShape(userProfileDto.getBodyShape());
-                userProfile.setAboutMe(userProfileDto.getAboutMe());
-
-                em.persist(userProfile);
-
-                em.persist(user);
-            }
+        if (userRepository.findUserByEmail(userDto.getEmail()) == null) {
+            User user = loadUserWithUserDto(userDto);
+            em.persist(user);
+            return user;
         }
         else{
-            throw new ExistingUserException(user.getName());
+            throw new ExistingUserException(String.format("User already exist with %s email address."
+                    , userDto.getEmail()));
+        }
+    }
+
+    @Transactional
+    public UserProfileDto addOptionalFields(UserProfileDto userProfileDto){
+
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (user.getUserProfile() == null){
+
+            UserProfile userProfile = new UserProfile();
+            loadUserProfileWithUserProfileDto(userProfile, userProfileDto);
+
+            em.persist(userProfile);
+            user.setUserProfile(userProfile);
+            em.persist(user);
+        }
+        else{
+            UserProfile userProfile = user.getUserProfile();
+            loadUserProfileWithUserProfileDto(userProfile, userProfileDto);
+
+            em.persist(userProfile);
+            em.persist(user);
         }
 
         return userProfileDto;
@@ -130,26 +111,34 @@ public class UserService implements UserDetailsService {
         return userRepository.findUserByEmail(eMail);
     }
 
-
     @Transactional
-    public void createVerificationToken(User user, String token) {
-        VerificationToken vToken = new VerificationToken();
-        vToken.setToken(token);
-        vToken.setUser(user);
-        em.persist(vToken);
-        user.setToken(vToken);
-        em.persist(user);
-    }
-
     public VerificationToken getVerificationToken(String token) {
-
         return tokenService.getTokenByToken(token);
-
     }
 
     @Transactional
     public void saveRegisteredUser(User user) {
         user.setEnabled(true);
         em.persist(user);
+    }
+
+    private void loadUserProfileWithUserProfileDto(UserProfile userProfile, UserProfileDto userProfileDto){
+        userProfile.setAboutMe(userProfileDto.getAboutMe());
+        userProfile.setBodyShape(userProfileDto.getBodyShape());
+        userProfile.setCity(userProfileDto.getCity());
+        userProfile.setEyeColor(userProfileDto.getEyeColor());
+        userProfile.setHairColor(userProfileDto.getHairColor());
+        userProfile.setHeight(userProfileDto.getHeight());
+        userProfile.setHoroscope(userProfileDto.getHoroscope());
+        userProfile.setSmoking(userProfileDto.isSmoking());
+    }
+
+    private User loadUserWithUserDto(UserDto userDto){
+        User user = new User();
+        user.setName(userDto.getName());
+        user.setPassword(userDto.getPassword());
+        user.setEmail(userDto.getEmail());
+        user.setBirthDate(userDto.getBirthDate());
+        return user;
     }
 }
