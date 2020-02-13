@@ -2,10 +2,7 @@ package backend.services;
 
 import backend.dto.ProfileFilterDto;
 import backend.dto.UserProfileWithVisibleFields;
-import backend.model.Message;
-import backend.model.User;
-import backend.model.UserInterest;
-import backend.model.UserProfile;
+import backend.model.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +12,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Root;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,41 +37,21 @@ public class ProfileService {
     //default = 20db
     @Transactional
     public List<UserProfileWithVisibleFields> listingExistingUsers(ProfileFilterDto profileFilter){
+        /*
         User currentUser = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        int minAge = 0;
-        int maxAge = 100;
-        String lookingFor = "both";
-        int startingNumber = 0;
-        int numberOfProfilesToShow = 20;
-        if(currentUser.getUserInterest() != null){
-            UserInterest usersInterest = currentUser.getUserInterest();
-            minAge = usersInterest.getMinAge();
-            maxAge = usersInterest.getMaxAge();
-            lookingFor = usersInterest.getInterest().toString();
-            startingNumber = profileFilter.getStatingNumber();
-        }
-        if(currentUser.getUserInterest() == null) {
-            minAge = profileFilter.getMinAge();
-            maxAge = profileFilter.getMaxAge();
-            startingNumber = profileFilter.getStatingNumber();
-            lookingFor = profileFilter.getLookingFor();
-        }
-        if(profileFilter.getEndingNumber() == 0){
-            numberOfProfilesToShow = 20;
-        }else {numberOfProfilesToShow = profileFilter.getEndingNumber() - startingNumber;}
-        int finalMaxAge = maxAge;
-        int finalMinAge = minAge;
+    //CriteriaBuilder létrehozása
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<User> userQuery = criteriaBuilder.createQuery(User.class);
+        Root<User> rootUser = userQuery.from(User.class);
+    //Criteriabuilderes szűrések:
+        userQuery.select(rootUser).where(criteriaBuilder
+                .greaterThan(rootUser.get(User_.BIRTH_DATE), LocalDateTime.now().minusYears(profileFilter.getMinAge())));
+        */
+
         List<User> userList = em.createQuery("select u from User u").getResultList();
         List<User> userList1 = userList.stream()
-                .filter(user -> getYearsBetweenDates(user.getBirthDate()) <= finalMaxAge && getYearsBetweenDates(user.getBirthDate()) >= finalMinAge).collect(Collectors.toList());
-        /*
-        if(!lookingFor.equals("both")){
-            String finalLookingFor = lookingFor;
-            userStream.filter(u -> u.getUserProfile().getGender().equals(finalLookingFor));
-        }*/
-
+                .filter(user -> getYearsBetweenDates(user.getBirthDate()) >= profileFilter.getMinAge() && getYearsBetweenDates(user.getBirthDate()) <= profileFilter.getMaxAge()).collect(Collectors.toList());
         return getResultList(userList1);
-        //return getResultList(em.createQuery("select u from User u").getResultList());
     }
 
     private int getYearsBetweenDates(LocalDate birthDate){
@@ -80,6 +59,7 @@ public class ProfileService {
         return (int) numberOfYears;
     }
 
+    //Returns list of userProfiles to display
     private List<UserProfileWithVisibleFields> getResultList(List<User> userList){
         List<UserProfileWithVisibleFields> returnableList = new ArrayList<>();
         for(User user : userList){
@@ -89,7 +69,7 @@ public class ProfileService {
         return returnableList;
     }
 
-
+    //Returns UserProfileWithVisibleFields of a user with every displayable data
     private UserProfileWithVisibleFields createUserProfile(User user){
         UserProfileWithVisibleFields userProfileWithVisibleFields = new UserProfileWithVisibleFields(user.getBirthDate());
         if(user.getUserProfile() != null) {
@@ -111,9 +91,23 @@ public class ProfileService {
             userProfileWithVisibleFields.setLikesTravels(user.getUserInterest().isTravels());
         }
         userProfileWithVisibleFields.setName(user.getName());
+        userProfileWithVisibleFields.setId(user.getId());
         //userProfileWithVisibleFields.setImgUrl(user.getProfilePicture().getUrl());
         return userProfileWithVisibleFields;
     }
 
+
+
+    //Returns ProfileFilterDto based on current users interests
+    private ProfileFilterDto getUsersProfileFilterDto(){
+        User currentUser = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ProfileFilterDto profileFilterDto = new ProfileFilterDto();
+        profileFilterDto.setStatingNumber(currentUser.getUserInterest().getMinAge());
+        profileFilterDto.setEndingNumber(currentUser.getUserInterest().getMaxAge());
+        profileFilterDto.setLookingFor(currentUser.getUserInterest().getInterest().toString());
+        profileFilterDto.setStatingNumber(0);
+        profileFilterDto.setEndingNumber(20);
+        return profileFilterDto;
+    }
 
 }

@@ -9,6 +9,7 @@ import java.time.LocalDate;
 
 public class UserProfileWithVisibleFields {
 
+    private long id;
     private String name;
     private int age;    //TODO kiszámolni a születési dátumból
     private String aboutMe;
@@ -36,11 +37,12 @@ public class UserProfileWithVisibleFields {
 
 
     //A konstruktor az kort és a horoszkópot a születési dátumból számolja ki
-    public UserProfileWithVisibleFields(String name, LocalDate birthDate, String aboutMe, String city, int height,
+    public UserProfileWithVisibleFields(long id, String name, LocalDate birthDate, String aboutMe, String city, int height,
                                         Enum<BodyShape> bodyShape, Enum<EyeColor> eyeColor, Enum<HairColor> hairColor,
                                         boolean isSmoking, String imgUrl,
                                         boolean likesMovies, boolean likesSports, boolean likesMusic, boolean likesBooks,
                                         boolean likesCulture, boolean likesTravels, boolean likesPolitics) {
+        this.id = id;
         this.name = name;
         long years = java.time.temporal.ChronoUnit.YEARS.between( birthDate , LocalDate.now() );
         this.age = (int)years;
@@ -204,5 +206,13 @@ public class UserProfileWithVisibleFields {
 
     public void setLikesPolitics(boolean likesPolitics) {
         this.likesPolitics = likesPolitics;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }
