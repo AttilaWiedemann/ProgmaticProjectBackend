@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.criteria.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,28 +36,22 @@ public class ProfileService {
 
     //default = 20db
     @Transactional
-    public List<UserProfileWithVisibleFields> listingExistingUsers(ProfileFilterDto profileFilter){
-        User currentUser = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    //Create criteriaBuilder:
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-        CriteriaQuery<User> userQuery = criteriaBuilder.createQuery(User.class);
-        Root<User> rootUser = userQuery.from(User.class);
-        Join<User, UserProfile> userProfile = rootUser.join(User_.userProfile);
-    //Filtering by criteriaBuilder:
-        //Older than minimum age:
-        userQuery.select(rootUser).where(criteriaBuilder
-                .lessThanOrEqualTo(rootUser.get(User_.BIRTH_DATE), LocalDate.now().minusYears(profileFilter.getMinAge())));
-        //Younger than maximum age:
-        userQuery.select(rootUser).where(criteriaBuilder
-                .greaterThanOrEqualTo(rootUser.get(User_.BIRTH_DATE), LocalDate.now().minusYears(profileFilter.getMaxAge())));
-        //Based on interest:
-        if(profileFilter.getLookingFor().equals("Man") || profileFilter.getLookingFor().equals("Woman")) {
-                Enum<Gender> interest = generateEnum(profileFilter.getLookingFor());
-            assert interest != null;
-            userQuery.select(rootUser).where(criteriaBuilder.equal(userProfile.get(UserProfile_.GENDER), interest));
+    public List<UserProfileWithVisibleFields> listingExistingUsers(ProfileFilterDto profileFilter) {
+        List<User> userList = em.createQuery("select u from User u where u.birthDate < :first and u.birthDate > :second")
+                .setParameter("first", LocalDate.now().minusYears(profileFilter.getMinAge()))
+                .setParameter("second", LocalDate.now().minusYears(profileFilter.getMaxAge())).getResultList();
+        switch (profileFilter.getLookingFor()){
+            case "Man":
+                return getResultList(userList.stream()
+                        .filter(user -> user.getUserProfile().getGender().toString().equals("MAN"))
+                        .collect(Collectors.toList()));
+            case "Woman":
+                return getResultList(userList.stream()
+                        .filter(user -> user.getUserProfile().getGender().toString().equals("WOMAN"))
+                        .collect(Collectors.toList()));
+            default:
+                return getResultList(userList);
         }
-        List<User> resultList = em.createQuery(userQuery).getResultList();
-        return getResultList(resultList);
     }
 
     //Returns list of userProfiles to display

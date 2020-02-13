@@ -27,6 +27,8 @@ public class UserProfile {
 
     private Enum<Gender> gender;
 
+    private String genderforEntity;
+
     private boolean smoking;
 
     @OneToOne
@@ -107,6 +109,14 @@ public class UserProfile {
         this.smoking = smoking;
     }
 
+    public String getGenderforEntity() {
+        return genderforEntity;
+    }
+
+    public void setGenderforEntity(String genderforEntity) {
+        this.genderforEntity = genderforEntity;
+    }
+
     public UserProfile() {
     }
 
@@ -129,5 +139,6 @@ public class UserProfile {
         this.smoking = isSmoking;
         this.gender = gender;
         this.eyeColor = eyeColor;
+        this.genderforEntity = gender.toString();
     }
 }
