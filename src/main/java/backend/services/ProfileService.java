@@ -2,6 +2,8 @@ package backend.services;
 
 import backend.dto.ProfileFilterDto;
 import backend.dto.UserProfileWithVisibleFields;
+import backend.enums.Gender;
+import backend.enums.Interest;
 import backend.model.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -9,10 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -37,35 +36,27 @@ public class ProfileService {
     //default = 20db
     @Transactional
     public List<UserProfileWithVisibleFields> listingExistingUsers(ProfileFilterDto profileFilter){
-
         User currentUser = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    //CriteriaBuilder létrehozása
+    //Create criteriaBuilder:
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<User> userQuery = criteriaBuilder.createQuery(User.class);
         Root<User> rootUser = userQuery.from(User.class);
-    //Criteriabuilderes szűrések:
-        //idősebb, mint a filter minimum életkor
-        System.out.println(profileFilter.getMinAge());
-        profileFilter.setMinAge(-20);
+        Join<User, UserProfile> userProfile = rootUser.join(User_.userProfile);
+    //Filtering by criteriaBuilder:
+        //Older than minimum age:
         userQuery.select(rootUser).where(criteriaBuilder
-                .lessThan(rootUser.get(User_.BIRTH_DATE), LocalDate.now().minusYears(profileFilter.getMinAge())));
-        //fiatalabb, mint a filter maximum életkor
+                .lessThanOrEqualTo(rootUser.get(User_.BIRTH_DATE), LocalDate.now().minusYears(profileFilter.getMinAge())));
+        //Younger than maximum age:
         userQuery.select(rootUser).where(criteriaBuilder
-                .greaterThan(rootUser.get(User_.BIRTH_DATE), LocalDate.now().minusYears(profileFilter.getMaxAge())));
-
-/*
-        List<User> userList = em.createQuery("select u from User u").getResultList();
-        List<User> userList1 = userList.stream()
-                .filter(user -> getYearsBetweenDates(user.getBirthDate()) >= profileFilter.getMinAge() && getYearsBetweenDates(user.getBirthDate()) <= profileFilter.getMaxAge()).collect(Collectors.toList());
-        return getResultList(userList1);
- */
+                .greaterThanOrEqualTo(rootUser.get(User_.BIRTH_DATE), LocalDate.now().minusYears(profileFilter.getMaxAge())));
+        //Based on interest:
+        if(profileFilter.getLookingFor().equals("Man") || profileFilter.getLookingFor().equals("Woman")) {
+                Enum<Gender> interest = generateEnum(profileFilter.getLookingFor());
+            assert interest != null;
+            userQuery.select(rootUser).where(criteriaBuilder.equal(userProfile.get(UserProfile_.GENDER), interest));
+        }
         List<User> resultList = em.createQuery(userQuery).getResultList();
         return getResultList(resultList);
-    }
-
-    private int getYearsBetweenDates(LocalDate birthDate){
-        long numberOfYears = ChronoUnit.YEARS.between(LocalDate.now(), birthDate);
-        return (int) numberOfYears;
     }
 
     //Returns list of userProfiles to display
@@ -110,18 +101,15 @@ public class ProfileService {
         return userProfileWithVisibleFields;
     }
 
-
-
-    //Returns ProfileFilterDto based on current users interests
-    private ProfileFilterDto getUsersProfileFilterDto(){
-        User currentUser = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ProfileFilterDto profileFilterDto = new ProfileFilterDto();
-        profileFilterDto.setStatingNumber(currentUser.getUserInterest().getMinAge());
-        profileFilterDto.setEndingNumber(currentUser.getUserInterest().getMaxAge());
-        profileFilterDto.setLookingFor(currentUser.getUserInterest().getInterest().toString());
-        profileFilterDto.setStatingNumber(0);
-        profileFilterDto.setEndingNumber(20);
-        return profileFilterDto;
+    //Generates Enum based on filter
+    private Enum<Gender> generateEnum(String userInterest){
+        switch (userInterest){
+            case "Man":
+                return Gender.MAN;
+            case "Woman":
+                return Gender.WOMAN;
+            default:    //Method is called within an if statement, never reaches default return
+                return null;
+            }
     }
-
 }
