@@ -42,7 +42,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(event.getUser().getEmail());
         email.setSubject("Registration Confirmation");
-        email.setText("https://intense-meadow-41798.herokuapp.com/" + event.getAppUrl() + "/regitrationConfirm?token=" + token);
+        email.setText("https://intense-meadow-41798.herokuapp.com" + event.getAppUrl() + "/regitrationConfirm?token=" + token);
         mailSender.send(email);
     }
 }
