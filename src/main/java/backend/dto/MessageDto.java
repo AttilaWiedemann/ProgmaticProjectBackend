@@ -12,6 +12,10 @@ public class MessageDto {
     public MessageDto() {
     }
 
+    public MessageDto(@NotNull @NotBlank String text) {
+        this.text = text;
+    }
+
     public String getText() {
         return text;
     }

@@ -1,15 +1,12 @@
 package backend.controllers;
 
 import backend.dto.ConversationDto;
-import backend.dto.MessageDto;
 import backend.model.Conversation;
-import backend.model.Message;
 import backend.services.ConversationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 public class ConversationController {
@@ -24,16 +21,16 @@ public class ConversationController {
         this.conversationService = conversationService;
     }
 
-    @RequestMapping(path = ("/conversation"), method = RequestMethod.GET) // bejelentkezetthez tartozó üzenetek
+    @RequestMapping(path = ("/conversation"), method = RequestMethod.GET)
     public ArrayList<Conversation> allConversation() {
         return conversationService.getAllConversationOfUser();
 
     }
 
-    @RequestMapping(path = ("/conversation"), method = RequestMethod.POST) // TODO kellenek a RequestBody-k?
-    public Conversation newConversation(@RequestBody ConversationDto conversationDto,@RequestBody MessageDto messageDto) {
+    @RequestMapping(path = ("/conversation"), method = RequestMethod.POST)
+    public Conversation newConversation(@RequestBody ConversationDto conversationDto) {
         //Long convId = conversationService.createConversation(conversationDto, messageDto);
-        return conversationService.createConversation(conversationDto, messageDto);/*oneConversation(convId)*/
+        return conversationService.createConversation(conversationDto);/*oneConversation(convId)*/
     }
 
     @RequestMapping(path = ("/conversation/{id}"), method = RequestMethod.GET) // id-s linkkel, alapján

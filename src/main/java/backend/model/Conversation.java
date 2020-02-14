@@ -1,6 +1,9 @@
 package backend.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -9,14 +12,19 @@ public class Conversation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany
-    private List<Message> conversationMessages;
+    @JsonManagedReference
+    @OneToMany (mappedBy = "conversation", fetch = FetchType.LAZY)
+    private List<ConversationMessage> conversationMessages;
 
     private String convStarter;
     private String convPartner;
 
+    public void addMessage(ConversationMessage convMess) {
+        this.conversationMessages.add(convMess);
+    }
 
     public Conversation() {
+        conversationMessages = new ArrayList<>();
     }
 
     public Long getId() {
@@ -27,11 +35,11 @@ public class Conversation {
         this.id = id;
     }
 
-    public List<Message> getConversationMessages() {
+    public List<ConversationMessage> getConversationMessages() {
         return conversationMessages;
     }
 
-    public void setConversationMessages(List<Message> conversationMessages) {
+    public void setConversationMessages(List<ConversationMessage> conversationMessages) {
         this.conversationMessages = conversationMessages;
     }
 

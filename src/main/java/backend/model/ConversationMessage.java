@@ -1,5 +1,6 @@
 package backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -8,20 +9,24 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
-public class Message {
+public class ConversationMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String author;
     private String partner;
 
-    @NotNull
-    @NotBlank
+    /*@NotNull
+    @NotBlank*/
     private String text;
     @DateTimeFormat(pattern = "yyyy/MMMM/dd HH:mm")
     private LocalDateTime creationDate;
 
 
+    public ConversationMessage() {
+    }
+
+    @JsonBackReference
     @ManyToOne
     private Conversation conversation;
 
@@ -71,5 +76,6 @@ public class Message {
 
     public void setConversation(Conversation conversation) {
         this.conversation = conversation;
+        //this.conversation.addMessage(this);
     }
 }

@@ -2,25 +2,19 @@ package backend.services;
 
 import backend.dto.ProfileFilterDto;
 import backend.dto.UserProfileWithVisibleFields;
-import backend.model.Message;
 import backend.model.User;
 import backend.model.UserInterest;
-import backend.model.UserProfile;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class ProfileService {
