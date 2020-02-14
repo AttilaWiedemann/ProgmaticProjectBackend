@@ -37,7 +37,7 @@ public class ConversationService {
         em.persist(message);
         //newConversation.addMessage(message); TODO miWAAAN
         em.persist(newConversation);
-        return newConversation;
+        return getConversation(newConversation.getId());
     }
 
     public String getPartnerName(Long convId) {
