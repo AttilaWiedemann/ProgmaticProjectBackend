@@ -29,7 +29,7 @@ public class UserProfile implements Externalizable {
 
     private Enum horoscope;
 
-    private Enum<Gender> gender;
+    private Enum gender;
 
     private String genderforEntity;
 
