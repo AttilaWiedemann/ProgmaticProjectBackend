@@ -1,16 +1,12 @@
 package backend.controllers;
 
-import backend.dto.FilterDto;
-import backend.dto.UserDto;
-import backend.dto.UserInterestDto;
-import backend.dto.UserProfileDto;
+import backend.dto.*;
 import backend.events.OnRegistrationCompleteEvent;
 import backend.exceptions.ExistingUserException;
 import backend.exceptions.NotExistingUserException;
 import backend.model.User;
-import backend.repos.UserRepository;
 import backend.services.UserInterestService;
-import org.graalvm.compiler.lir.LIRInstruction;
+import backend.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +14,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import backend.services.UserService;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -106,15 +101,30 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
         }
     }
-    
-    @RequestMapping(path = ("/rest/user/profile/{id}"), method = RequestMethod.POST)
-    public UserProfileDto userProfileDto(@RequestBody UserProfileDto userProfileDto) {
-        return userService.addOptionalFields(userProfileDto);
+
+    @RequestMapping(path = ("/rest/getProfileDto"), method = RequestMethod.GET)
+    public UserProfileDto getUserDto(){
+        UserProfileDto userdto = new UserProfileDto();
+        userdto.setAboutMe("Ez az updatelt about me");
+        return userdto;
     }
-    @RequestMapping(path = ("/rest/user/profile/{id}"), method = RequestMethod.PUT)
+
+    @RequestMapping(path = ("/rest/getUserProfileDtoWithVisibleFields"))
+    public UserProfileWithVisibleFields getUserProfileForUpdateTesting(){
+        UserProfileWithVisibleFields profileToReturn = new UserProfileWithVisibleFields();
+        profileToReturn.setCity("Nyíregyháza");
+        return profileToReturn;
+    }
+
+    @RequestMapping(path = ("/rest/user/updateUser"), method = RequestMethod.POST)
+    public UserProfileWithVisibleFields userProfileDto(@RequestBody UserProfileWithVisibleFields updatedProfile) {
+        return userService.addOptionalFields(updatedProfile);
+    }
+    /*
+    @RequestMapping(path = ("/rest/updateUser"), method = RequestMethod.PUT)
     public UserProfileDto updateUserProfile(@RequestBody UserProfileDto userProfileDto, Long id) {
         return userService.addOptionalFields(userProfileDto);
-    }
+    }*/
     @RequestMapping(path =("/rest/user/profile/{id}/interest"),method = RequestMethod.POST)
     public UserInterestDto addUserInteresttoProfile(@RequestBody UserInterestDto userInterestDto, Long id){
         return userInterestService.creatUserIterest(userInterestDto,id);

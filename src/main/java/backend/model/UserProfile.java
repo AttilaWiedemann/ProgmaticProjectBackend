@@ -3,9 +3,13 @@ package backend.model;
 import backend.enums.*;
 
 import javax.persistence.*;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 @Entity
-public class UserProfile {
+public class UserProfile implements Externalizable {
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
@@ -33,10 +37,10 @@ public class UserProfile {
 
     @OneToOne
     private Image profileImage;
-
+/*
     @OneToOne
     private User user;
-
+*/
     public Long getId() {
         return id;
     }
@@ -140,5 +144,15 @@ public class UserProfile {
         this.gender = gender;
         this.eyeColor = eyeColor;
         this.genderforEntity = gender.toString();
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput objectOutput) throws IOException {
+
+    }
+
+    @Override
+    public void readExternal(ObjectInput objectInput) throws IOException, ClassNotFoundException {
+
     }
 }

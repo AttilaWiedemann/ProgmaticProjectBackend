@@ -69,13 +69,13 @@ public class ProfileService {
         UserProfileWithVisibleFields userProfileWithVisibleFields = new UserProfileWithVisibleFields(user.getBirthDate());
         if(user.getUserProfile() != null) {
             userProfileWithVisibleFields.setAboutMe(user.getUserProfile().getAboutMe());
-            userProfileWithVisibleFields.setBodyShape(user.getUserProfile().getBodyShape());
+            userProfileWithVisibleFields.setBodyShape(user.getUserProfile().getBodyShape().toString());
             userProfileWithVisibleFields.setCity(user.getUserProfile().getCity());
-            userProfileWithVisibleFields.setEyeColor(user.getUserProfile().getEyeColor());
-            userProfileWithVisibleFields.setHairColor(user.getUserProfile().getHairColor());
+            userProfileWithVisibleFields.setEyeColor(user.getUserProfile().getEyeColor().toString());
+            userProfileWithVisibleFields.setHairColor(user.getUserProfile().getHairColor().toString());
             userProfileWithVisibleFields.setHeight(user.getUserProfile().getHeight());
             userProfileWithVisibleFields.setSmoking(user.getUserProfile().isSmoking());
-            userProfileWithVisibleFields.setGender(user.getUserProfile().getGender());
+            userProfileWithVisibleFields.setGender(user.getUserProfile().getGender().toString());
         }
         if(user.getUserInterest() != null) {
             userProfileWithVisibleFields.setLikesBooks(user.getUserInterest().isBooks());
@@ -85,7 +85,7 @@ public class ProfileService {
             userProfileWithVisibleFields.setLikesPolitics(user.getUserInterest().isPolitics());
             userProfileWithVisibleFields.setLikesSports(user.getUserInterest().isSports());
             userProfileWithVisibleFields.setLikesTravels(user.getUserInterest().isTravels());
-            userProfileWithVisibleFields.setInterest(user.getUserInterest().getInterest());
+            userProfileWithVisibleFields.setInterest(user.getUserInterest().getInterest().toString());
             userProfileWithVisibleFields.setMinAge(user.getUserInterest().getMinAge());
             userProfileWithVisibleFields.setMaxAge(user.getUserInterest().getMaxAge());
         }
@@ -105,6 +105,6 @@ public class ProfileService {
                 return Gender.WOMAN;
             default:    //Method is called within an if statement, never reaches default return
                 return null;
-            }
+        }
     }
 }

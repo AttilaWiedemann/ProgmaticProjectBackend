@@ -2,9 +2,12 @@ package backend.services;
 
 import backend.dto.UserDto;
 import backend.dto.UserProfileDto;
+import backend.dto.UserProfileWithVisibleFields;
+import backend.enums.*;
 import backend.exceptions.ExistingUserException;
 import backend.exceptions.NotExistingUserException;
 import backend.model.User;
+import backend.model.UserInterest;
 import backend.model.UserProfile;
 import backend.model.VerificationToken;
 import backend.repos.UserRepository;
@@ -82,28 +85,38 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public UserProfileDto addOptionalFields(UserProfileDto userProfileDto){
+    public UserProfileWithVisibleFields addOptionalFields(UserProfileWithVisibleFields updatedProfile){
 
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        long id = currentUser.getId();
+        User user = em.find(User.class, id);
 
-        if (user.getUserProfile() == null){
-
+        if (user.getUserProfile() == null || user.getUserInterest() == null){
             UserProfile userProfile = new UserProfile();
-            loadUserProfileWithUserProfileDto(userProfile, userProfileDto);
-
-            em.persist(userProfile);
+            UserInterest userInterest = new UserInterest();
+            //UserProfile beállítása
+            generateUserProfileForUser(userProfile, updatedProfile);
+            //UserInterest beállítása
+            generateUserInterestForUser(userInterest, updatedProfile);
+            //perzisztálása
             user.setUserProfile(userProfile);
+            user.setUserInterest(userInterest);
+            em.persist(userInterest);
+            em.persist(userProfile);
             em.persist(user);
         }
         else{
-            UserProfile userProfile = user.getUserProfile();
-            loadUserProfileWithUserProfileDto(userProfile, userProfileDto);
 
+            UserProfile userProfile = em.find(UserProfile.class, user.getUserProfile().getId());
+            UserInterest userInterest = em.find(UserInterest.class, user.getUserInterest().getId());
+            //UserProfile updatelés
+            generateUserProfileForUser(userProfile, updatedProfile);
+            //UserInterest beállítása
+            generateUserInterestForUser(userInterest, updatedProfile);
+            em.persist(userInterest);
             em.persist(userProfile);
-            em.persist(user);
         }
-
-        return userProfileDto;
+        return updatedProfile;
     }
 
     @Transactional
@@ -122,15 +135,29 @@ public class UserService implements UserDetailsService {
         em.persist(user);
     }
 
-    private void loadUserProfileWithUserProfileDto(UserProfile userProfile, UserProfileDto userProfileDto){
-        userProfile.setAboutMe(userProfileDto.getAboutMe());
-        userProfile.setBodyShape(userProfileDto.getBodyShape());
-        userProfile.setCity(userProfileDto.getCity());
-        userProfile.setEyeColor(userProfileDto.getEyeColor());
-        userProfile.setHairColor(userProfileDto.getHairColor());
-        userProfile.setHeight(userProfileDto.getHeight());
-        userProfile.setHoroscope(userProfileDto.getHoroscope());
-        userProfile.setSmoking(userProfileDto.isSmoking());
+    private void generateUserProfileForUser (UserProfile userProfile, UserProfileWithVisibleFields updatedProfile){
+        userProfile.setAboutMe(updatedProfile.getAboutMe());
+        userProfile.setCity(updatedProfile.getCity());
+        userProfile.setBodyShape(BodyShape.valueOf(updatedProfile.getBodyShape()));
+        userProfile.setEyeColor(EyeColor.valueOf(updatedProfile.getEyeColor()));
+        userProfile.setHairColor(HairColor.valueOf(updatedProfile.getHairColor()));
+        userProfile.setHoroscope(Horoscope.valueOf(updatedProfile.getHoroscopeEnum()));
+        userProfile.setGender(Gender.valueOf(updatedProfile.getGender()));
+        userProfile.setSmoking(updatedProfile.isSmoking());
+    }
+
+    private void generateUserInterestForUser(UserInterest userInterest, UserProfileWithVisibleFields updatedProfile){
+        userInterest.setMovies(updatedProfile.isLikesMovies());
+        userInterest.setSports(updatedProfile.isLikesSports());
+        userInterest.setMusic(updatedProfile.isLikesMusic());
+        userInterest.setBooks(updatedProfile.isLikesBooks());
+        userInterest.setCulture(updatedProfile.isLikesCulture());
+        userInterest.setTravels(updatedProfile.isLikesTravels());
+        userInterest.setTechnology(updatedProfile.isLikesTechnology());
+        userInterest.setPolitics(updatedProfile.isLikesPolitics());
+        userInterest.setMinAge(updatedProfile.getMinAge());
+        userInterest.setMaxAge(updatedProfile.getMaxAge());
+        userInterest.setInterest(Interest.valueOf(updatedProfile.getInterest()));
     }
 
     private User loadUserWithUserDto(UserDto userDto){
