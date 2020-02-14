@@ -12,20 +12,21 @@ public class UserProfileWithVisibleFields {
     private String aboutMe;
     private String city;
     private double height;
-    private Enum<BodyShape> bodyShape;
-    private Enum<Gender> gender;
-    private Enum<Interest> interest;
+    private String bodyShape;
+    private String gender;
+    private String interest;
     private LocalDate birthDate;
     private int minAge;
     private int maxAge;
-    private Enum<EyeColor> eyeColor;
-    private Enum<HairColor> hairColor;
-    private Enum<Horoscope> horoscopeEnum;   //TODO Horoszkóp kiszámolása konstruktorban
+    private String eyeColor;
+    private String hairColor;
+    private String horoscopeEnum;   //TODO Horoszkóp kiszámolása konstruktorban
     private boolean isSmoking;
     private String imgUrl;
     private boolean likesMovies;
     private boolean likesSports;
     private boolean likesMusic;
+    private boolean likesTechnology;
     private boolean likesBooks;
     private boolean likesCulture;
     private boolean likesTravels;
@@ -34,7 +35,7 @@ public class UserProfileWithVisibleFields {
     public UserProfileWithVisibleFields(){}
     public UserProfileWithVisibleFields(LocalDate birthDate){
         long years = java.time.temporal.ChronoUnit.YEARS.between( birthDate , LocalDate.now() );
-        this.horoscopeEnum = Horoscope.HoroscopeFromBirthDate(birthDate);
+        this.horoscopeEnum = Horoscope.HoroscopeFromBirthDate(birthDate).toString();
     }
 
 
@@ -45,7 +46,7 @@ public class UserProfileWithVisibleFields {
                                         boolean isSmoking, String imgUrl,
                                         boolean likesMovies, boolean likesSports, boolean likesMusic, boolean likesBooks,
                                         boolean likesCulture, boolean likesTravels, boolean likesPolitics,
-                                        int minAge, int maxAge) {
+                                        int minAge, int maxAge, boolean likesTechnology) {
         this.id = id;
         this.name = name;
         long years = java.time.temporal.ChronoUnit.YEARS.between( birthDate , LocalDate.now() );
@@ -53,10 +54,10 @@ public class UserProfileWithVisibleFields {
         this.aboutMe = aboutMe;
         this.city = city;
         this.height = height;
-        this.bodyShape = bodyShape;
-        this.eyeColor = eyeColor;
-        this.hairColor = hairColor;
-        this.horoscopeEnum = Horoscope.HoroscopeFromBirthDate(birthDate);
+        this.bodyShape = bodyShape.toString();
+        this.eyeColor = eyeColor.toString();
+        this.hairColor = hairColor.toString();
+        this.horoscopeEnum = Horoscope.HoroscopeFromBirthDate(birthDate).toString();
         this.isSmoking = isSmoking;
         this.imgUrl = imgUrl;
         this.likesMovies = likesMovies;
@@ -69,8 +70,9 @@ public class UserProfileWithVisibleFields {
         this.minAge = minAge;
         this.maxAge = maxAge;
         this.birthDate = birthDate;
-        this.gender = gender;
-        this.interest = interest;
+        this.gender = gender.toString();
+        this.interest = interest.toString();
+        this.likesTechnology = likesTechnology;
     }
 
     public String getName() {
@@ -113,35 +115,35 @@ public class UserProfileWithVisibleFields {
         this.height = height;
     }
 
-    public Enum<BodyShape> getBodyShape() {
+    public String getBodyShape() {
         return bodyShape;
     }
 
-    public void setBodyShape(Enum<BodyShape> bodyShape) {
+    public void setBodyShape(String bodyShape) {
         this.bodyShape = bodyShape;
     }
 
-    public Enum<EyeColor> getEyeColor() {
+    public String getEyeColor() {
         return eyeColor;
     }
 
-    public void setEyeColor(Enum<EyeColor> eyeColor) {
+    public void setEyeColor(String eyeColor) {
         this.eyeColor = eyeColor;
     }
 
-    public Enum<HairColor> getHairColor() {
+    public String getHairColor() {
         return hairColor;
     }
 
-    public void setHairColor(Enum<HairColor> hairColor) {
+    public void setHairColor(String hairColor) {
         this.hairColor = hairColor;
     }
 
-    public Enum<Horoscope> getHoroscopeEnum() {
+    public String getHoroscopeEnum() {
         return horoscopeEnum;
     }
 
-    public void setHoroscopeEnum(Enum<Horoscope> horoscopeEnum) {
+    public void setHoroscopeEnum(String horoscopeEnum) {
         this.horoscopeEnum = horoscopeEnum;
     }
 
@@ -225,19 +227,19 @@ public class UserProfileWithVisibleFields {
         this.id = id;
     }
 
-    public Enum<Gender> getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(Enum<Gender> gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
-    public Enum<Interest> getInterest() {
+    public String getInterest() {
         return interest;
     }
 
-    public void setInterest(Enum<Interest> interest) {
+    public void setInterest(String interest) {
         this.interest = interest;
     }
 
@@ -263,5 +265,13 @@ public class UserProfileWithVisibleFields {
 
     public void setMaxAge(int maxAge) {
         this.maxAge = maxAge;
+    }
+
+    public boolean isLikesTechnology() {
+        return likesTechnology;
+    }
+
+    public void setLikesTechnology(boolean likesTechnology) {
+        this.likesTechnology = likesTechnology;
     }
 }
