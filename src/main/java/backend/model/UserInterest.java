@@ -2,10 +2,7 @@ package backend.model;
 
 import backend.enums.Interest;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class UserInterest {
