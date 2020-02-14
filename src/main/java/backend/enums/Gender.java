@@ -1,13 +1,8 @@
 package backend.enums;
 
 public enum Gender {
-    MAN(1),WOMAN(2);
+    MAN,WOMAN;
 
 
-    private final int value;
 
-
-    private Gender(int value) {
-        this.value = value;
-    }
 }
