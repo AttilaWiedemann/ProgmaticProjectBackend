@@ -2,12 +2,17 @@ package backend.services;
 
 import backend.dto.UserDto;
 import backend.dto.UserProfileDto;
+import backend.dto.UserProfileWithVisibleFields;
+import backend.enums.*;
 import backend.exceptions.ExistingUserException;
+import backend.exceptions.NotExistingUserException;
 import backend.model.User;
+import backend.model.UserInterest;
 import backend.model.UserProfile;
 import backend.model.VerificationToken;
 import backend.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -34,30 +39,6 @@ public class UserService implements UserDetailsService {
         this.tokenService = tokenService;
     }
 
-    @Transactional
-    public UserDto createUser(UserDto userDto){
-
-        //NotEmpty String name, @NotEmpty String password, @Email String email, LocalDate birthDate
-
-        User user = new User();
-        user.setName(userDto.getName());
-        user.setPassword(userDto.getPassword());
-        user.setEmail(userDto.getEmail());
-        user.setBirthDate(userDto.getBirthDate());
-
-        //user.setGender(userDto.getGender());
-        //user.setIntrest(userDto.getIntrest());
-
-        if (userRepository.findUserByEmail(user.getEmail()) == null) {
-            em.persist(user);
-            emailService.sendSimpleMessage(user.getEmail(), "WELCOME", "WELCOME");
-            return userDto;
-        }
-        else{
-            throw new ExistingUserException(user.getName());
-        }
-    }
-
 
     @Override
     public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
@@ -79,50 +60,63 @@ public class UserService implements UserDetailsService {
 
 
     @Transactional
-    public UserProfileDto addOptionalFields(UserProfileDto userProfileDto, Long id){
-
-        User user = userRepository.findUserById(id);
-
+    public User getUser(Long userId){
+        User user = userRepository.findUserById(userId);
         if (user != null){
-            if (user.getUserProfile() == null){
-                UserProfile userProfile = new UserProfile();
+            return user;
+        }
+        else {
+            throw new NotExistingUserException("Not existing User.");
+        }
+    }
 
-                userProfile.setAboutMe(userProfileDto.getAboutMe());
-                userProfile.setBodyShape(userProfileDto.getBodyShape());
-                userProfile.setCity(userProfileDto.getCity());
-                userProfile.setEyeColor(userProfileDto.getEyeColor());
-                userProfile.setHairColor(userProfileDto.getHairColor());
-                userProfile.setHeight(userProfileDto.getHeight());
-                userProfile.setHoroscope(userProfileDto.getHoroscope());
-                userProfile.setSmoking(userProfileDto.isSmoking());
+    @Transactional
+    public User createUser(UserDto userDto){
 
-                em.persist(userProfile);
-                user.setUserProfile(userProfile);
-                em.persist(user);
-            }
-            else{
-
-                UserProfile userProfile = user.getUserProfile();
-
-                userProfile.setSmoking(userProfileDto.isSmoking());
-                userProfile.setHoroscope(userProfileDto.getHoroscope());
-                userProfile.setHeight(userProfileDto.getHeight());
-                userProfile.setHairColor(userProfileDto.getHairColor());
-                userProfile.setEyeColor(userProfileDto.getEyeColor());
-                userProfile.setCity(userProfileDto.getCity());
-                userProfile.setBodyShape(userProfileDto.getBodyShape());
-                userProfile.setAboutMe(userProfileDto.getAboutMe());
-
-                em.persist(userProfile);
-
-                em.persist(user);
-            }
+        if (userRepository.findUserByEmail(userDto.getEmail()) == null) {
+            User user = loadUserWithUserDto(userDto);
+            em.persist(user);
+            return user;
         }
         else{
-            throw new ExistingUserException(user.getName());
+            throw new ExistingUserException(String.format("User already exist with %s email address."
+                    , userDto.getEmail()));
         }
+    }
 
-        return userProfileDto;
+    @Transactional
+    public UserProfileWithVisibleFields addOptionalFields(UserProfileWithVisibleFields updatedProfile){
+
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        long id = currentUser.getId();
+        User user = em.find(User.class, id);
+
+        if (user.getUserProfile() == null || user.getUserInterest() == null){
+            UserProfile userProfile = new UserProfile();
+            UserInterest userInterest = new UserInterest();
+            //UserProfile beállítása
+            generateUserProfileForUser(userProfile, updatedProfile);
+            //UserInterest beállítása
+            generateUserInterestForUser(userInterest, updatedProfile);
+            //perzisztálása
+            user.setUserProfile(userProfile);
+            user.setUserInterest(userInterest);
+            em.persist(userInterest);
+            em.persist(userProfile);
+            em.persist(user);
+        }
+        else{
+
+            UserProfile userProfile = em.find(UserProfile.class, user.getUserProfile().getId());
+            UserInterest userInterest = em.find(UserInterest.class, user.getUserInterest().getId());
+            //UserProfile updatelés
+            generateUserProfileForUser(userProfile, updatedProfile);
+            //UserInterest beállítása
+            generateUserInterestForUser(userInterest, updatedProfile);
+            em.persist(userInterest);
+            em.persist(userProfile);
+        }
+        return updatedProfile;
     }
 
     @Transactional
@@ -130,26 +124,48 @@ public class UserService implements UserDetailsService {
         return userRepository.findUserByEmail(eMail);
     }
 
-
     @Transactional
-    public void createVerificationToken(User user, String token) {
-        VerificationToken vToken = new VerificationToken();
-        vToken.setToken(token);
-        vToken.setUser(user);
-        em.persist(vToken);
-        user.setToken(vToken);
-        em.persist(user);
-    }
-
     public VerificationToken getVerificationToken(String token) {
-
         return tokenService.getTokenByToken(token);
-
     }
 
     @Transactional
     public void saveRegisteredUser(User user) {
         user.setEnabled(true);
         em.persist(user);
+    }
+
+    private void generateUserProfileForUser (UserProfile userProfile, UserProfileWithVisibleFields updatedProfile){
+        userProfile.setAboutMe(updatedProfile.getAboutMe());
+        userProfile.setCity(updatedProfile.getCity());
+        userProfile.setBodyShape(BodyShape.valueOf(updatedProfile.getBodyShape()));
+        userProfile.setEyeColor(EyeColor.valueOf(updatedProfile.getEyeColor()));
+        userProfile.setHairColor(HairColor.valueOf(updatedProfile.getHairColor()));
+        userProfile.setHoroscope(Horoscope.valueOf(updatedProfile.getHoroscopeEnum()));
+        userProfile.setGender(Gender.valueOf(updatedProfile.getGender()));
+        userProfile.setSmoking(updatedProfile.isSmoking());
+    }
+
+    private void generateUserInterestForUser(UserInterest userInterest, UserProfileWithVisibleFields updatedProfile){
+        userInterest.setMovies(updatedProfile.isLikesMovies());
+        userInterest.setSports(updatedProfile.isLikesSports());
+        userInterest.setMusic(updatedProfile.isLikesMusic());
+        userInterest.setBooks(updatedProfile.isLikesBooks());
+        userInterest.setCulture(updatedProfile.isLikesCulture());
+        userInterest.setTravels(updatedProfile.isLikesTravels());
+        userInterest.setTechnology(updatedProfile.isLikesTechnology());
+        userInterest.setPolitics(updatedProfile.isLikesPolitics());
+        userInterest.setMinAge(updatedProfile.getMinAge());
+        userInterest.setMaxAge(updatedProfile.getMaxAge());
+        userInterest.setInterest(Interest.valueOf(updatedProfile.getInterest()));
+    }
+
+    private User loadUserWithUserDto(UserDto userDto){
+        User user = new User();
+        user.setName(userDto.getName());
+        user.setPassword(userDto.getPassword());
+        user.setEmail(userDto.getEmail());
+        user.setBirthDate(userDto.getBirthDate());
+        return user;
     }
 }

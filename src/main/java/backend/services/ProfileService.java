@@ -2,19 +2,24 @@ package backend.services;
 
 import backend.dto.ProfileFilterDto;
 import backend.dto.UserProfileWithVisibleFields;
-import backend.model.User;
-import backend.model.UserInterest;
+import backend.enums.Gender;
+import backend.enums.Interest;
+import backend.model.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.criteria.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ProfileService {
@@ -25,15 +30,52 @@ public class ProfileService {
     @Transactional
     public UserProfileWithVisibleFields getProfileInfos() {
         User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserProfileWithVisibleFields userProfileWithVisibleFields = createUserProfile(user);
+        return userProfileWithVisibleFields;
+    }
+
+    //default = 20db
+    @Transactional
+    public List<UserProfileWithVisibleFields> listingExistingUsers(ProfileFilterDto profileFilter) {
+        List<User> userList = em.createQuery("select u from User u where u.birthDate < :first and u.birthDate > :second")
+                .setParameter("first", LocalDate.now().minusYears(profileFilter.getMinAge()))
+                .setParameter("second", LocalDate.now().minusYears(profileFilter.getMaxAge())).getResultList();
+        switch (profileFilter.getLookingFor()){
+            case "Man":
+                return getResultList(userList.stream()
+                        .filter(user -> user.getUserProfile().getGender().toString().equals("MAN"))
+                        .collect(Collectors.toList()));
+            case "Woman":
+                return getResultList(userList.stream()
+                        .filter(user -> user.getUserProfile().getGender().toString().equals("WOMAN"))
+                        .collect(Collectors.toList()));
+            default:
+                return getResultList(userList);
+        }
+    }
+
+    //Returns list of userProfiles to display
+    private List<UserProfileWithVisibleFields> getResultList(List<User> userList){
+        List<UserProfileWithVisibleFields> returnableList = new ArrayList<>();
+        for(User user : userList){
+            UserProfileWithVisibleFields userProfileWithVisibleFields = createUserProfile(user);
+            returnableList.add(userProfileWithVisibleFields);
+        }
+        return returnableList;
+    }
+
+    //Returns UserProfileWithVisibleFields of a user with every displayable data
+    private UserProfileWithVisibleFields createUserProfile(User user){
         UserProfileWithVisibleFields userProfileWithVisibleFields = new UserProfileWithVisibleFields(user.getBirthDate());
         if(user.getUserProfile() != null) {
             userProfileWithVisibleFields.setAboutMe(user.getUserProfile().getAboutMe());
-            userProfileWithVisibleFields.setBodyShape(user.getUserProfile().getBodyShape());
+            userProfileWithVisibleFields.setBodyShape(user.getUserProfile().getBodyShape().toString());
             userProfileWithVisibleFields.setCity(user.getUserProfile().getCity());
-            userProfileWithVisibleFields.setEyeColor(user.getUserProfile().getEyeColor());
-            userProfileWithVisibleFields.setHairColor(user.getUserProfile().getHairColor());
+            userProfileWithVisibleFields.setEyeColor(user.getUserProfile().getEyeColor().toString());
+            userProfileWithVisibleFields.setHairColor(user.getUserProfile().getHairColor().toString());
             userProfileWithVisibleFields.setHeight(user.getUserProfile().getHeight());
             userProfileWithVisibleFields.setSmoking(user.getUserProfile().isSmoking());
+            userProfileWithVisibleFields.setGender(user.getUserProfile().getGender().toString());
         }
         if(user.getUserInterest() != null) {
             userProfileWithVisibleFields.setLikesBooks(user.getUserInterest().isBooks());
@@ -43,95 +85,26 @@ public class ProfileService {
             userProfileWithVisibleFields.setLikesPolitics(user.getUserInterest().isPolitics());
             userProfileWithVisibleFields.setLikesSports(user.getUserInterest().isSports());
             userProfileWithVisibleFields.setLikesTravels(user.getUserInterest().isTravels());
+            userProfileWithVisibleFields.setInterest(user.getUserInterest().getInterest().toString());
+            userProfileWithVisibleFields.setMinAge(user.getUserInterest().getMinAge());
+            userProfileWithVisibleFields.setMaxAge(user.getUserInterest().getMaxAge());
         }
         userProfileWithVisibleFields.setName(user.getName());
+        userProfileWithVisibleFields.setId(user.getId());
+        userProfileWithVisibleFields.setBirthDate(user.getBirthDate());
         //userProfileWithVisibleFields.setImgUrl(user.getProfilePicture().getUrl());
         return userProfileWithVisibleFields;
     }
 
-    //default = 20db
-    @Transactional
-    public List<UserProfileWithVisibleFields> listingExistingUsers(ProfileFilterDto profileFilter){
-        User currentUser = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long currentUserId = currentUser.getId();
-        int minAge = 0; int maxAge = 100; String lookingFor = "both"; int startingNumber = 0; int numberOfProfilesToShow = 20;
-        if(currentUser.getUserInterest() != null){
-            UserInterest usersInterest = currentUser.getUserInterest();
-            if(usersInterest.getMinAge() != 0){
-                minAge = usersInterest.getMinAge();
-            } else { minAge = profileFilter.getMinAge();}
-            if(usersInterest.getMaxAge() != 0){
-                maxAge = usersInterest.getMaxAge();
-            } else { maxAge = profileFilter.getMaxAge();}
-            if(usersInterest.getInterest() != null){
-                lookingFor = usersInterest.getInterest().toString();
-            } else { lookingFor = profileFilter.getLookingFor();}  //string/enum
-            startingNumber = profileFilter.getStatingNumber();
+    //Generates Enum based on filter
+    private Enum<Gender> generateEnum(String userInterest){
+        switch (userInterest){
+            case "Man":
+                return Gender.MAN;
+            case "Woman":
+                return Gender.WOMAN;
+            default:    //Method is called within an if statement, never reaches default return
+                return null;
         }
-        if(currentUser.getUserInterest() == null) {
-            minAge = profileFilter.getMinAge();
-            if(profileFilter.getMaxAge() != 0) {
-                maxAge = profileFilter.getMaxAge();
-            }
-            startingNumber = profileFilter.getStatingNumber();
-            if(profileFilter.getLookingFor() != null) {
-                lookingFor = profileFilter.getLookingFor();
-            }
-        }
-        if(profileFilter.getEndingNumber() == 0){
-            numberOfProfilesToShow = 20;
-        }else {numberOfProfilesToShow = profileFilter.getEndingNumber() - startingNumber;}
-
-        int finalMaxAge = maxAge;
-        int finalMinAge = minAge;
-
-        List<User> userList = em.createQuery("select u from User u").getResultList();
-        List<User> userList1 = userList.stream()
-                .filter(user -> getYearsBetweenDates(user.getBirthDate()) <= finalMaxAge && getYearsBetweenDates(user.getBirthDate()) >= finalMinAge).collect(Collectors.toList());
-        /*
-        if(!lookingFor.equals("both")){
-            String finalLookingFor = lookingFor;
-            userStream.filter(u -> u.getUserProfile().getGender().equals(finalLookingFor));
-        }*/
-
-        //return getResultList(userList1);
-        return getResultList(em.createQuery("select u from User u").getResultList());
     }
-
-    private int getYearsBetweenDates(LocalDate birthDate){
-        long numberOfYears = ChronoUnit.YEARS.between(LocalDate.now(), birthDate);
-        return (int) numberOfYears;
-    }
-
-    private List<UserProfileWithVisibleFields> getResultList(List<User> userList){
-        List<UserProfileWithVisibleFields> returnableList = new ArrayList<>();
-        for(User user : userList){
-            UserProfileWithVisibleFields userProfileWithVisibleFields = new UserProfileWithVisibleFields(user.getBirthDate());
-            if(user.getUserProfile() != null) {
-                userProfileWithVisibleFields.setAboutMe(user.getUserProfile().getAboutMe());
-                userProfileWithVisibleFields.setBodyShape(user.getUserProfile().getBodyShape());
-                userProfileWithVisibleFields.setCity(user.getUserProfile().getCity());
-                userProfileWithVisibleFields.setEyeColor(user.getUserProfile().getEyeColor());
-                userProfileWithVisibleFields.setHairColor(user.getUserProfile().getHairColor());
-                userProfileWithVisibleFields.setHeight(user.getUserProfile().getHeight());
-                userProfileWithVisibleFields.setSmoking(user.getUserProfile().isSmoking());
-            }
-            if(user.getUserInterest() != null) {
-                userProfileWithVisibleFields.setLikesBooks(user.getUserInterest().isBooks());
-                userProfileWithVisibleFields.setLikesCulture(user.getUserInterest().isCulture());
-                userProfileWithVisibleFields.setLikesMovies(user.getUserInterest().isMovies());
-                userProfileWithVisibleFields.setLikesMusic(user.getUserInterest().isMusic());
-                userProfileWithVisibleFields.setLikesPolitics(user.getUserInterest().isPolitics());
-                userProfileWithVisibleFields.setLikesSports(user.getUserInterest().isSports());
-                userProfileWithVisibleFields.setLikesTravels(user.getUserInterest().isTravels());
-            }
-            userProfileWithVisibleFields.setName(user.getName());
-            //userProfileWithVisibleFields.setImgUrl(user.getProfilePicture().getUrl());
-            returnableList.add(userProfileWithVisibleFields);
-        }
-        return returnableList;
-    }
-
-
-
 }

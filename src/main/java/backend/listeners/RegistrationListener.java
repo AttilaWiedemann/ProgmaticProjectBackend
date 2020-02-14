@@ -2,6 +2,7 @@ package backend.listeners;
 
 import backend.events.OnRegistrationCompleteEvent;
 import backend.model.User;
+import backend.services.TokenService;
 import backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -20,35 +21,28 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     @Autowired
     private UserService userService;
 
-    //@Autowired
-    //private MessageSource messages;
+    @Autowired
+    private TokenService tokenService;
 
     @Autowired
     private JavaMailSender mailSender;
 
-    //@EventListener
     @Override
     public void onApplicationEvent(OnRegistrationCompleteEvent onRegistrationCompleteEvent) {
         this.confirmRegistration(onRegistrationCompleteEvent);
     }
 
-
     private void confirmRegistration(OnRegistrationCompleteEvent event) {
-        User user = event.getUser();
-        //UUID uuid = UUID.randomUUID();
         String token = UUID.randomUUID().toString();
-        userService.createVerificationToken(user, token);
+        tokenService.createVerificationToken(event.getUser(), token);
+        sendMail(event, token);
+    }
 
-        String recipientAddress = user.getEmail();
-        String subject = "Registration Confirmation";
-        String confirmationUrl
-                = event.getAppUrl() + "/regitrationConfirm?token=" + token;
-        //String message = messages.getMessage("message.regSucc", null, event.getLocale());
-
+    private void sendMail(OnRegistrationCompleteEvent event, String token){
         SimpleMailMessage email = new SimpleMailMessage();
-        email.setTo(recipientAddress);
-        email.setSubject(subject);
-        email.setText("http://localhost:8080" + confirmationUrl);
+        email.setTo(event.getUser().getEmail());
+        email.setSubject("Registration Confirmation");
+        email.setText("http://localhost:8080" + event.getAppUrl() + "/regitrationConfirm?token=" + token);
         mailSender.send(email);
     }
 }

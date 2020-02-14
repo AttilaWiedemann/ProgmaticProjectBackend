@@ -1,9 +1,9 @@
 package backend.services;
 
+import backend.exceptions.ExistingUserException;
 import backend.model.Image;
 import backend.model.User;
 import backend.repos.ImageRepository;
-import backend.repos.ImageRepositoryImpl;
 import backend.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,23 +40,26 @@ public class ImageService {
                 byteObjects[i++] = b;
             }
             User user = userRepository.findUserById(id);
-            Image image = new Image();
-            image.setBytes((byteObjects));
-            em.persist(image);
-            image.setUrl("/rest/picture/"+ user.getName());
-            image = imageRepository.findByUrl("/rest/picture/"+ user.getName());
-            user.setProfilePicture(image);
-            image.setUrl("/rest/picture/"+ user.getName() + image.getId());
-            em.persist(image);
-            em.persist(user);
-
-
+            if (user.getProfilePicture()==null) {
+                Image image = new Image();
+                image.setUser(user);
+                image.setBytes((byteObjects));
+                em.persist(image);
+                image.setUrl("/rest/picture/" + user.getName());
+                image = imageRepository.findByUrl("/rest/picture/" + user.getName());
+                user.setProfilePicture(image);
+                image.setUrl("/rest/picture/" + image.getId());
+                em.persist(image);
+                em.persist(user);
+            }else {
+                throw new ExistingUserException("Már van feltöltve profilkép");
+            }
 
         } catch (IOException e) {
-
-
-
             e.printStackTrace();
+        } catch (ExistingUserException e) {
+            e.getMessage();
+
         }
     }
     }

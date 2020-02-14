@@ -1,5 +1,6 @@
 package backend.services;
 
+import backend.model.User;
 import backend.model.VerificationToken;
 import backend.repos.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +16,21 @@ public class TokenService {
     @PersistenceContext
     EntityManager em;
 
-    VerificationTokenRepository tokenRepository;
+    private VerificationTokenRepository tokenRepository;
 
     @Autowired
     public TokenService(VerificationTokenRepository tokenRepository) {
         this.tokenRepository = tokenRepository;
+    }
+
+    @Transactional
+    public void createVerificationToken(User user, String token) {
+        VerificationToken vToken = new VerificationToken();
+        vToken.setToken(token);
+        vToken.setUser(user);
+        em.persist(vToken);
+        user.setToken(vToken);
+        em.persist(user);
     }
 
     @Transactional

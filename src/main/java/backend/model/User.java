@@ -51,7 +51,7 @@ public class User implements UserDetails {
         return profilePicture;
     }
 
-    @OneToOne
+    @OneToOne(mappedBy = "user")
    private Image profilePicture;
 
 //    @ManyToOne

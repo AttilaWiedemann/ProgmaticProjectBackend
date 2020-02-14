@@ -3,9 +3,13 @@ package backend.model;
 import backend.enums.*;
 
 import javax.persistence.*;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 @Entity
-public class UserProfile {
+public class UserProfile implements Externalizable {
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
@@ -25,16 +29,18 @@ public class UserProfile {
 
     private Enum horoscope;
 
-    private String gender;
+    private Enum<Gender> gender;
+
+    private String genderforEntity;
 
     private boolean smoking;
 
     @OneToOne
     private Image profileImage;
-
+/*
     @OneToOne
     private User user;
-
+*/
     public Long getId() {
         return id;
     }
@@ -107,15 +113,23 @@ public class UserProfile {
         this.smoking = smoking;
     }
 
+    public String getGenderforEntity() {
+        return genderforEntity;
+    }
+
+    public void setGenderforEntity(String genderforEntity) {
+        this.genderforEntity = genderforEntity;
+    }
+
     public UserProfile() {
     }
 
-    public String getGender() {
+    public Enum<Gender> getGender() {
         return gender;
     }
 
     public void setGender(Enum gender) {
-        this.gender = gender.toString();
+        this.gender = gender;
     }
 
     public UserProfile(String aboutMe, String city, double height, Enum<BodyShape> bodyShape, Enum<EyeColor> eyeColor,
@@ -127,6 +141,18 @@ public class UserProfile {
         this.hairColor = hairColor;
         this.horoscope = horoscope;
         this.smoking = isSmoking;
-        this.gender = gender.toString();
+        this.gender = gender;
+        this.eyeColor = eyeColor;
+        this.genderforEntity = gender.toString();
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput objectOutput) throws IOException {
+
+    }
+
+    @Override
+    public void readExternal(ObjectInput objectInput) throws IOException, ClassNotFoundException {
+
     }
 }
