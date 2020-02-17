@@ -30,7 +30,7 @@ public class UserProfile implements Externalizable {
 
     private Enum horoscope;
 
-    private Enum gender;
+    private Gender gender;
 
     private String genderforEntity;
 
@@ -125,16 +125,16 @@ public class UserProfile implements Externalizable {
     public UserProfile() {
     }
 
-    public Enum<Gender> getGender() {
+    public Gender getGender() {
         return gender;
     }
 
-    public void setGender(Enum gender) {
+    public void setGender(Gender gender) {
         this.gender = gender;
     }
 
     public UserProfile(String aboutMe, String city, double height, Enum<BodyShape> bodyShape, Enum<EyeColor> eyeColor,
-                       Enum<HairColor> hairColor, Enum<Horoscope> horoscope, boolean isSmoking, Enum<Gender> gender){
+                       Enum<HairColor> hairColor, Enum<Horoscope> horoscope, boolean isSmoking, Gender gender){
         this.aboutMe = aboutMe;
         this.city = city;
         this.height = height;

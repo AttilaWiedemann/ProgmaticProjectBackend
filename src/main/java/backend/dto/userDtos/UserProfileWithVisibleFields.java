@@ -13,7 +13,7 @@ public class UserProfileWithVisibleFields {
     private String city;
     private double height;
     private String bodyShape;
-    private String gender;
+    private Gender gender;
     private String interest;
     private LocalDate birthDate;
     private int minAge;
@@ -42,7 +42,7 @@ public class UserProfileWithVisibleFields {
     //A konstruktor az kort és a horoszkópot a születési dátumból számolja ki
     public UserProfileWithVisibleFields(long id, String name, LocalDate birthDate, String aboutMe, String city, int height,
                                         Enum<BodyShape> bodyShape, Enum<EyeColor> eyeColor, Enum<HairColor> hairColor,
-                                        Enum<Gender> gender, Enum<Interest> interest,
+                                        Gender gender, Enum<Interest> interest,
                                         boolean isSmoking, String imgUrl,
                                         boolean likesMovies, boolean likesSports, boolean likesMusic, boolean likesBooks,
                                         boolean likesCulture, boolean likesTravels, boolean likesPolitics,
@@ -70,7 +70,7 @@ public class UserProfileWithVisibleFields {
         this.minAge = minAge;
         this.maxAge = maxAge;
         this.birthDate = birthDate;
-        this.gender = gender.toString();
+        this.gender = gender;
         this.interest = interest.toString();
         this.likesTechnology = likesTechnology;
     }
@@ -227,11 +227,11 @@ public class UserProfileWithVisibleFields {
         this.id = id;
     }
 
-    public String getGender() {
+    public Gender getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender(Gender gender) {
         this.gender = gender;
     }
 

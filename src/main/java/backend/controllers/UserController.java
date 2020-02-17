@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -56,12 +57,12 @@ public class UserController {
         return userService.getUser();
     }
 
-    /*
+
     @RequestMapping(path = ("/rest/profiles"), method = RequestMethod.POST)
     public List<UserProfileWithVisibleFields> getUserList(@RequestBody UserProfileFilterDto filterDto){
-        return userProfileService.listingExistingUsers(filterDto);
+        return userService.listingExistingUsers(filterDto);
     }
-    */
+
 
     //UPDATE
     @RequestMapping(path = ("/rest/updateUser"), method = RequestMethod.POST)
