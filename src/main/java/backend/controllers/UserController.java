@@ -79,68 +79,6 @@ public class UserController {
     }
 
 
-
-/*
-
-    @RequestMapping(path = ("/rest/myProfile"), method = RequestMethod.GET)
-    public UserProfileWithVisibleFields myProfile() {
-        return userProfileService.getProfileInfos();
-    }
-
-
-
-    @RequestMapping(path = ("rest/myProfile"), method = RequestMethod.POST)
-    public UserProfileWithVisibleFields updateMyProfile(@RequestBody UserProfileWithVisibleFields updatedProfile){
-        //TODO profileservice updatelje az adatbázisban szereplő entitásokat
-        return updatedProfile;
-    }
-
-
-    @RequestMapping(path = ("/rest/user/updateUser"), method = RequestMethod.POST)
-    public UserProfileWithVisibleFields userProfileDto(@RequestBody UserProfileWithVisibleFields updatedProfile) {
-        return userService.addOptionalFields(updatedProfile);
-    }
-
-
-    */
-
-
-/*
-    @RequestMapping(path = ("/rest/getProfileDto"), method = RequestMethod.GET)
-    public UserProfileDto getUserDto(){
-        UserProfileDto userdto = new UserProfileDto();
-        userdto.setAboutMe("Ez az updatelt about me");
-        return userdto;
-    }
-
-    @RequestMapping(path = ("/rest/getUserProfileDtoWithVisibleFields"))
-    public UserProfileWithVisibleFields getUserProfileForUpdateTesting(){
-        UserProfileWithVisibleFields profileToReturn = new UserProfileWithVisibleFields();
-        profileToReturn.setCity("Nyíregyháza");
-        return profileToReturn;
-    }
-
-    @RequestMapping(path = ("/rest/updateUser"), method = RequestMethod.PUT)
-    public UserProfileDto updateUserProfile(@RequestBody UserProfileDto userProfileDto, Long id) {
-        return userService.addOptionalFields(userProfileDto);
-    }
-
-    @RequestMapping(path =("/rest/user/profile/{id}/interest"),method = RequestMethod.POST)
-    public UserInterestDto addUserInteresttoProfile(@RequestBody UserInterestDto userInterestDto, Long id){
-        return userInterestService.creatUserIterest(userInterestDto,id);
-    }
-    */
-
-
-
-
-
-
-
-
-
-
-
     /**
      * Temporary or technical methods for DEBUG BUILD
      */
@@ -148,12 +86,5 @@ public class UserController {
     public Long get(){
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return user.getId();
-    }
-    @RequestMapping(path = ("/rest/test"), method = RequestMethod.GET)
-    public UserFilterDto sampleFilter(){
-        UserFilterDto sampleFilter = new UserFilterDto();
-        sampleFilter.setMinAge(0);
-        sampleFilter.setMaxAge(100);
-        return sampleFilter;
     }
 }
