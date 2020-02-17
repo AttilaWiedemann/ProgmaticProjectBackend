@@ -19,7 +19,7 @@ public class MessageController {
         this.conversationService = conversationService;
     }
 
-    @RequestMapping(path = ("/message"), method = RequestMethod.POST) //TODO kellenek a @RequestBody-k?
+    @RequestMapping(path = ("/message"), method = RequestMethod.POST)
     public Conversation newMessage(@RequestBody NewMessageDto newMessageDto) {
         Long id = newMessageDto.getId();
         String text = newMessageDto.getText();

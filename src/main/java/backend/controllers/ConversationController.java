@@ -1,6 +1,7 @@
 package backend.controllers;
 
 import backend.dto.messageDtos.ConversationDto;
+import backend.exceptions.ExistingConversationException;
 import backend.exceptions.NotExistingConversationException;
 import backend.model.messageModels.Conversation;
 import backend.services.messageServices.ConversationService;
@@ -18,9 +19,6 @@ public class ConversationController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     ConversationService conversationService;
-
-    //TODO hibaüzenetek
-    //TODO végpontok kiírása, jó-e két bemenő
 
     @Autowired
     public ConversationController(ConversationService conversationService) {
@@ -40,16 +38,21 @@ public class ConversationController {
             logger.error(ex.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
         }
-
     }
 
     @RequestMapping(path = ("/conversation"), method = RequestMethod.POST)
     public Conversation newConversation(@RequestBody ConversationDto conversationDto) {
-        //Long convId = conversationService.createConversation(conversationDto, messageDto);
-        return conversationService.createConversation(conversationDto);/*oneConversation(convId)*/
+        try {
+            logger.info("Conversation started with " + conversationDto.getConvPartner());
+            return conversationService.createConversation(conversationDto);
+        } catch (ExistingConversationException ex) {
+            logger.error("Conversation already started with this user");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+
+        }
     }
 
-    @RequestMapping(path = ("/conversation/{id}"), method = RequestMethod.GET) // id-s linkkel, alapján
+    @RequestMapping(path = ("/conversation/{id}"), method = RequestMethod.GET)
     public Conversation oneConversation(@PathVariable("id") Long id) {
         return conversationService.getConversation(id);
     }
