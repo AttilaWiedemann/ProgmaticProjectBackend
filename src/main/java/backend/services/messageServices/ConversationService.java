@@ -1,6 +1,7 @@
 package backend.services.messageServices;
 
 import backend.dto.messageDtos.ConversationDto;
+import backend.exceptions.NotExistingConversationException;
 import backend.model.messageModels.Conversation;
 import backend.model.messageModels.ConversationMessage;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,7 +36,7 @@ public class ConversationService {
         message.setCreationDate(LocalDateTime.now());
         message.setConversation(newConversation);
         em.persist(message);
-        //newConversation.addMessage(message); TODO miWAAAN
+        //newConversation.addMessage(message);
         em.persist(newConversation);
         return getConversation(newConversation.getId());
     }
@@ -48,6 +49,7 @@ public class ConversationService {
         //ArrayList<String> names = new ArrayList<>();
 
     }
+
     public String getSartnerName(Long convId) {
         //return (String)em.createQuery("SELECT c.convStarter FROM Conversation c where c.id =: convId").setParameter("convId", convId).getSingleResult();
         Conversation conv = em.createQuery("SELECT c FROM Conversation c where c.id = :convId", Conversation.class).setParameter("convId", convId).getSingleResult();
@@ -55,7 +57,7 @@ public class ConversationService {
     }
 
     @Transactional
-    public Conversation getConversation(Long convId) { // TODO nem szedi ki az üzeneteket
+    public Conversation getConversation(Long convId) {
         //("SELECT c FROM Conversation c left join fetch c.conversationMessages where c.id = :convId", Conversation.class)
 //TODO itt bekerült left joint fetch 10:32
         Conversation oneConversation = em.createQuery("SELECT c FROM Conversation c where c.id = :id", Conversation.class)
@@ -75,10 +77,8 @@ public class ConversationService {
         //String names = getNames(convId);
         if (loggedInUserName.equals(getPartnerName(convId))) {
             newMessage.setPartner(getSartnerName(convId));
-
         } else {
             newMessage.setPartner(getPartnerName(convId));
-
         }
 
         /*if (loggedInUserName.equals(conversation.getConvStarter())) {
@@ -107,7 +107,7 @@ public class ConversationService {
         String loggedInUserName = SecurityContextHolder.getContext().getAuthentication().getName();
         ArrayList<Conversation> all = getAllConversation();
         ArrayList<Conversation> allOfOneUser = new ArrayList<>();
-      // ArrayList<ConversationMessage> messagesOfUser = getAllMessagesOfUser();
+        // ArrayList<ConversationMessage> messagesOfUser = getAllMessagesOfUser();
         for (Conversation conversation : all) {
             long convid = conversation.getId();
 
@@ -117,13 +117,49 @@ public class ConversationService {
                 allOfOneUser.add(conversation);
             }
         }
-        return allOfOneUser;
+        if (allOfOneUser.size() < 1) {
+            throw new NotExistingConversationException("There is no conversations for you yet.");
+        } else {
+            return allOfOneUser;
+        }
     }
 
 
     @Transactional
     public ArrayList<Conversation> getAllConversation() {
         List<Conversation> allConversation = em.createQuery("SELECT c FROM Conversation c", Conversation.class).getResultList(); // átírni
-        return (ArrayList<Conversation>)allConversation;
+        if (allConversation.size() < 1) {
+            throw new NotExistingConversationException("There is no conversations at all yet.");
+        } else {
+            return (ArrayList<Conversation>) allConversation;
+        }
+    }
+
+    @Transactional
+    public Conversation conversationByParticipants(String userOne, String userTwo) {
+        Conversation conversation = em.createQuery("SELECT c FROM Conversation c where c.convStarter = :convStarter and c.convPartner =:convPartner", Conversation.class)
+                .setParameter("convStarter", userOne)
+                .setParameter("convPartner", userTwo)
+                .getSingleResult();
+        if (conversation == null) {
+            conversation = em.createQuery("SELECT c FROM Conversation c where c.convStarter = :convStarter and c.convPartner =:convPartner", Conversation.class)
+                    .setParameter("convStarter", userTwo)
+                    .setParameter("convPartner", userOne)
+                    .getSingleResult();
+        }
+        return conversation;
+    }
+
+    @Transactional
+    public boolean doesConversationAlreadyExist(String loggedInUserName, String convPartner) {
+        Conversation conversation = em.createQuery("SELECT c FROM Conversation c where c.convStarter = :convStarter and c.convPartner =:convPartner", Conversation.class)
+                .setParameter("convStarter", loggedInUserName)
+                .setParameter("convPartner", convPartner)
+                .getSingleResult();
+        if (conversation != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
