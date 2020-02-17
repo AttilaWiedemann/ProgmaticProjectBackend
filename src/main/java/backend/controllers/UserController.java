@@ -4,8 +4,6 @@ import backend.dto.userDtos.*;
 import backend.events.OnRegistrationCompleteEvent;
 import backend.exceptions.ExistingUserException;
 import backend.model.userModels.User;
-import backend.services.userServices.UserInterestService;
-import backend.services.userServices.UserProfileService;
 import backend.services.userServices.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 public class UserController {
