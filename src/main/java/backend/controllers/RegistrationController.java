@@ -1,8 +1,8 @@
 package backend.controllers;
 
-import backend.model.User;
-import backend.model.VerificationToken;
-import backend.services.UserService;
+import backend.model.userModels.User;
+import backend.model.emailModels.VerificationToken;
+import backend.services.userServices.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 
-import java.util.Calendar;
 import java.util.Locale;
 
 @Controller

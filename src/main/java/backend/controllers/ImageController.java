@@ -1,10 +1,10 @@
 package backend.controllers;
 
-import backend.model.Image;
-import backend.model.User;
+import backend.model.imageModels.Image;
+import backend.model.userModels.User;
 import backend.repos.ImageRepository;
 import backend.repos.UserRepository;
-import backend.services.ImageService;
+import backend.services.imageServices.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

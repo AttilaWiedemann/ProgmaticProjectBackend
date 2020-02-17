@@ -1,14 +1,11 @@
 package backend.listeners;
 
 import backend.events.OnRegistrationCompleteEvent;
-import backend.model.User;
-import backend.services.TokenService;
-import backend.services.UserService;
+import backend.services.emailServices.TokenService;
+import backend.services.userServices.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 
-import org.springframework.context.MessageSource;
-import org.springframework.context.event.EventListener;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;

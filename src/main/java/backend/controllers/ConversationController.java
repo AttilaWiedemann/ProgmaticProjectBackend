@@ -1,8 +1,8 @@
 package backend.controllers;
 
-import backend.dto.ConversationDto;
-import backend.model.Conversation;
-import backend.services.ConversationService;
+import backend.dto.messageDtos.ConversationDto;
+import backend.model.messageModels.Conversation;
+import backend.services.messageServices.ConversationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
