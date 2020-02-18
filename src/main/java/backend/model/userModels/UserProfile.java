@@ -16,11 +16,13 @@ public class UserProfile implements Externalizable {
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Lob
+    @Column(length=512)
     private String aboutMe;
 
     private String city;
 
-    private double height;
+    private int height;
 
     private Enum bodyShape;
 
@@ -70,7 +72,7 @@ public class UserProfile implements Externalizable {
         return height;
     }
 
-    public void setHeight(double height) {
+    public void setHeight(int height) {
         this.height = height;
     }
 
@@ -133,7 +135,7 @@ public class UserProfile implements Externalizable {
         this.gender = gender;
     }
 
-    public UserProfile(String aboutMe, String city, double height, Enum<BodyShape> bodyShape, Enum<EyeColor> eyeColor,
+    public UserProfile(String aboutMe, String city, int height, Enum<BodyShape> bodyShape, Enum<EyeColor> eyeColor,
                        Enum<HairColor> hairColor, Enum<Horoscope> horoscope, boolean isSmoking, Gender gender){
         this.aboutMe = aboutMe;
         this.city = city;
