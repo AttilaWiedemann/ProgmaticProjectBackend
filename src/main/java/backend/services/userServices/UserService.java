@@ -190,10 +190,10 @@ public class UserService implements UserDetailsService {
     private void generateUserProfileForUser (UserProfile userProfile, UserProfileWithVisibleFields updatedProfile){
         userProfile.setAboutMe(updatedProfile.getAboutMe());
         userProfile.setCity(updatedProfile.getCity());
-        userProfile.setBodyShape(BodyShape.valueOf(updatedProfile.getBodyShape()));
-        userProfile.setEyeColor(EyeColor.valueOf(updatedProfile.getEyeColor()));
-        userProfile.setHairColor(HairColor.valueOf(updatedProfile.getHairColor()));
-        userProfile.setHoroscope(Horoscope.valueOf(updatedProfile.getHoroscopeEnum()));
+        userProfile.setBodyShape(updatedProfile.getBodyShape());
+        userProfile.setEyeColor(updatedProfile.getEyeColor());
+        userProfile.setHairColor(updatedProfile.getHairColor());
+        userProfile.setHoroscope(updatedProfile.getHoroscopeEnum());
         userProfile.setGender(updatedProfile.getGender());
         userProfile.setSmoking(updatedProfile.isSmoking());
     }
@@ -209,7 +209,7 @@ public class UserService implements UserDetailsService {
         userInterest.setPolitics(updatedProfile.isLikesPolitics());
         userInterest.setMinAge(updatedProfile.getMinAge());
         userInterest.setMaxAge(updatedProfile.getMaxAge());
-        userInterest.setInterest(Interest.valueOf(updatedProfile.getInterest()));
+        userInterest.setInterest(updatedProfile.getInterest());
     }
 
     private User loadUserWithUserDto(UserDto userDto){
@@ -233,10 +233,10 @@ public class UserService implements UserDetailsService {
             userProfileWithVisibleFields.setAboutMe(userProfile.getAboutMe());
             userProfileWithVisibleFields.setCity(userProfile.getCity());
             userProfileWithVisibleFields.setHeight(userProfile.getHeight());
-            userProfileWithVisibleFields.setBodyShape(userProfile.getBodyShape().toString());
-            userProfileWithVisibleFields.setEyeColor(userProfile.getEyeColor().toString());
-            userProfileWithVisibleFields.setHairColor(userProfile.getHairColor().toString());
-            userProfileWithVisibleFields.setHoroscopeEnum(userProfile.getHoroscope().toString());
+            userProfileWithVisibleFields.setBodyShape(userProfile.getBodyShape());
+            userProfileWithVisibleFields.setEyeColor(userProfile.getEyeColor());
+            userProfileWithVisibleFields.setHairColor(userProfile.getHairColor());
+            userProfileWithVisibleFields.setHoroscopeEnum(userProfile.getHoroscope());
             userProfileWithVisibleFields.setGender(userProfile.getGender());
             userProfileWithVisibleFields.setSmoking(userProfile.isSmoking());
         }
@@ -264,7 +264,7 @@ public class UserService implements UserDetailsService {
             userProfileWithVisibleFields.setLikesTravels(userInterest.isTravels());
             userProfileWithVisibleFields.setLikesTechnology(userInterest.isTechnology());
             userProfileWithVisibleFields.setLikesPolitics(userInterest.isPolitics());
-            userProfileWithVisibleFields.setInterest(userInterest.getInterest().toString());
+            userProfileWithVisibleFields.setInterest(userInterest.getInterest());
             userProfileWithVisibleFields.setMinAge(userInterest.getMinAge());
             userProfileWithVisibleFields.setMaxAge(userInterest.getMaxAge());
         }

@@ -12,15 +12,15 @@ public class UserProfileWithVisibleFields {
     private String aboutMe;
     private String city;
     private double height;
-    private String bodyShape;
+    private BodyShape bodyShape;
     private Gender gender;
-    private String interest;
+    private Interest interest;
     private LocalDate birthDate;
     private int minAge;
     private int maxAge;
-    private String eyeColor;
-    private String hairColor;
-    private String horoscopeEnum;   //TODO Horoszkóp kiszámolása konstruktorban
+    private EyeColor eyeColor;
+    private HairColor hairColor;
+    private Horoscope horoscope;   //TODO Horoszkóp kiszámolása konstruktorban
     private boolean isSmoking;
     private String imgUrl;
     private boolean likesMovies;
@@ -36,14 +36,14 @@ public class UserProfileWithVisibleFields {
     public UserProfileWithVisibleFields(){}
     public UserProfileWithVisibleFields(LocalDate birthDate){
         long years = java.time.temporal.ChronoUnit.YEARS.between( birthDate , LocalDate.now() );
-        this.horoscopeEnum = Horoscope.HoroscopeFromBirthDate(birthDate).toString();
+        this.horoscope = Horoscope.HoroscopeFromBirthDate(birthDate);
     }
 
 
     //A konstruktor az kort és a horoszkópot a születési dátumból számolja ki
     public UserProfileWithVisibleFields(long id, String name, LocalDate birthDate, String aboutMe, String city, int height,
-                                        Enum<BodyShape> bodyShape, Enum<EyeColor> eyeColor, Enum<HairColor> hairColor,
-                                        Gender gender, Enum<Interest> interest,
+                                        BodyShape bodyShape, EyeColor eyeColor, HairColor hairColor,
+                                        Gender gender, Interest interest,
                                         boolean isSmoking, String imgUrl,
                                         boolean likesMovies, boolean likesSports, boolean likesMusic, boolean likesBooks,
                                         boolean likesCulture, boolean likesTravels, boolean likesPolitics,
@@ -55,10 +55,10 @@ public class UserProfileWithVisibleFields {
         this.aboutMe = aboutMe;
         this.city = city;
         this.height = height;
-        this.bodyShape = bodyShape.toString();
-        this.eyeColor = eyeColor.toString();
-        this.hairColor = hairColor.toString();
-        this.horoscopeEnum = Horoscope.HoroscopeFromBirthDate(birthDate).toString();
+        this.bodyShape = bodyShape;
+        this.eyeColor = eyeColor;
+        this.hairColor = hairColor;
+        this.horoscope = Horoscope.HoroscopeFromBirthDate(birthDate);
         this.isSmoking = isSmoking;
         this.imgUrl = imgUrl;
         this.likesMovies = likesMovies;
@@ -72,7 +72,7 @@ public class UserProfileWithVisibleFields {
         this.maxAge = maxAge;
         this.birthDate = birthDate;
         this.gender = gender;
-        this.interest = interest.toString();
+        this.interest = interest;
         this.likesTechnology = likesTechnology;
         this.birthYear = birthDate.getYear();
     }
@@ -117,36 +117,36 @@ public class UserProfileWithVisibleFields {
         this.height = height;
     }
 
-    public String getBodyShape() {
+    public BodyShape getBodyShape() {
         return bodyShape;
     }
 
-    public void setBodyShape(String bodyShape) {
+    public void setBodyShape(BodyShape bodyShape) {
         this.bodyShape = bodyShape;
     }
 
-    public String getEyeColor() {
+    public EyeColor getEyeColor() {
         return eyeColor;
     }
 
-    public void setEyeColor(String eyeColor) {
+    public void setEyeColor(EyeColor eyeColor) {
         this.eyeColor = eyeColor;
     }
 
-    public String getHairColor() {
+    public HairColor getHairColor() {
         return hairColor;
     }
 
-    public void setHairColor(String hairColor) {
+    public void setHairColor(HairColor hairColor) {
         this.hairColor = hairColor;
     }
 
-    public String getHoroscopeEnum() {
-        return horoscopeEnum;
+    public Horoscope getHoroscopeEnum() {
+        return horoscope;
     }
 
-    public void setHoroscopeEnum(String horoscopeEnum) {
-        this.horoscopeEnum = horoscopeEnum;
+    public void setHoroscopeEnum(Horoscope horoscopeEnum) {
+        this.horoscope = horoscopeEnum;
     }
 
     public boolean isSmoking() {
@@ -237,11 +237,11 @@ public class UserProfileWithVisibleFields {
         this.gender = gender;
     }
 
-    public String getInterest() {
+    public Interest getInterest() {
         return interest;
     }
 
-    public void setInterest(String interest) {
+    public void setInterest(Interest interest) {
         this.interest = interest;
     }
 

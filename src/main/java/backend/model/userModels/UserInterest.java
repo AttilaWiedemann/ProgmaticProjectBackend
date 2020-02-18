@@ -18,13 +18,13 @@ public class UserInterest {
     private boolean travels;
     private boolean technology;
     private boolean politics;
-    private Enum<Interest> interest;
+    private Interest interest;
     private int minAge;
     private int maxAge;
 
     public UserInterest(boolean movies, boolean sports, boolean music,
                         boolean books, boolean culture,
-                        boolean travels, boolean technology, boolean politics, Enum<Interest> interest,
+                        boolean travels, boolean technology, boolean politics, Interest interest,
                         int minAge, int maxAge) {
         this.movies = movies;
         this.sports = sports;
@@ -113,11 +113,11 @@ public class UserInterest {
         Id = id;
     }
 
-    public Enum<Interest> getInterest() {
+    public Interest getInterest() {
         return interest;
     }
 
-    public void setInterest(Enum<Interest> interest) {
+    public void setInterest(Interest interest) {
         this.interest = interest;
     }
 
