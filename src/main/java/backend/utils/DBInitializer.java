@@ -1,6 +1,8 @@
 package backend.utils;
 
 import backend.enums.*;
+import backend.model.messageModels.Conversation;
+import backend.model.messageModels.ConversationMessage;
 import backend.model.userModels.Authority;
 import backend.model.userModels.User;
 import backend.model.userModels.UserInterest;
@@ -14,6 +16,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.ServletException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -34,6 +37,31 @@ public class DBInitializer {
     public void init() {
         createAuthoritiesIfNotExist();
         createUsersIfNotExist();
+        createOneConversationWithSomeMessages();
+    }
+
+    private void createOneConversationWithSomeMessages() {
+        Conversation exampleConversation = new Conversation();
+        exampleConversation.setConvStarter("Habi");
+        exampleConversation.setConvPartner("UnfinishedUser");
+
+        ConversationMessage firstExampleMessage = new ConversationMessage();
+        firstExampleMessage.setAuthor("Habi");
+        firstExampleMessage.setPartner("UnfinishedUser");
+        firstExampleMessage.setCreationDate(LocalDateTime.now().minusHours(2));
+        firstExampleMessage.setText("habitol unfinishednek elso uzenet");
+        firstExampleMessage.setConversation(exampleConversation);
+
+        ConversationMessage secondExampleMessage = new ConversationMessage();
+        secondExampleMessage.setAuthor("UnfinishedUser");
+        secondExampleMessage.setPartner("Habi");
+        secondExampleMessage.setCreationDate(LocalDateTime.now().minusHours(1));
+        secondExampleMessage.setText("unfinishedtol habinak (masodik uzenet)");
+        secondExampleMessage.setConversation(exampleConversation);
+
+        em.persist(exampleConversation);
+        em.persist(firstExampleMessage);
+        em.persist(secondExampleMessage);
     }
 
     private void createAuthoritiesIfNotExist() {
