@@ -34,6 +34,9 @@ public class ImageService {
         User user = userRepository.findUserById(id);
         byte[] byteObjects = imageRepository.findByUrl("default").getBytes();
         saveImageFile(user, byteObjects);
+        MultipartFile file = null;
+        assert file != null;
+        file.transferTo(new File("resources/static/images/DefaultProfilePicture.png"));
 
     }
 

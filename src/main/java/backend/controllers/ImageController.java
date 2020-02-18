@@ -32,7 +32,7 @@ public class ImageController {
     @PostMapping("/rest/profilepicture")
     public ResponseEntity handleImagePost(MultipartFile file) throws IOException {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        imageService.setDefaultImageFile(file,user.getId());
+        imageService.setDefaultImageFile(user.getId());
         return new ResponseEntity(HttpStatus.OK);
     }
 //    @PostMapping("/rest/updatepicture")
