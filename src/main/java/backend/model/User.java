@@ -54,6 +54,16 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user")
    private Image profilePicture;
 
+    @ManyToOne()
+    private List<Image> Pictures;
+
+    public List<Image> getPictures() {
+        return Pictures;
+    }
+
+    public void setPictures(List<Image> pictures) {
+        Pictures = pictures;
+    }
 //    @ManyToOne
 //    private List<Image> imageList;
 
