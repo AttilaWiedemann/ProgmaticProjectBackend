@@ -5,6 +5,7 @@ import backend.dto.userDtos.UserProfileFilterDto;
 import backend.dto.userDtos.UserProfileWithVisibleFields;
 import backend.enums.*;
 import backend.exceptions.ExistingUserException;
+import backend.exceptions.NotAuthenticatedUserException;
 import backend.exceptions.NotExistingUserException;
 import backend.model.userModels.User;
 import backend.model.userModels.UserInterest;
@@ -83,13 +84,18 @@ public class UserService implements UserDetailsService {
     @Transactional
     public UserProfileWithVisibleFields getUser() {
         User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserProfileWithVisibleFields userProfileWithVisibleFields = new UserProfileWithVisibleFields();
-        addUserBaseDatas(userProfileWithVisibleFields, user);
-        addUserProfileDatas(userProfileWithVisibleFields, user);
-        addUserInterestDatas(userProfileWithVisibleFields, user);
-        return userProfileWithVisibleFields;
-    }
+        if (user != null){
+            UserProfileWithVisibleFields userProfileWithVisibleFields = new UserProfileWithVisibleFields();
+            addUserBaseDatas(userProfileWithVisibleFields, user);
+            addUserProfileDatas(userProfileWithVisibleFields, user);
+            addUserInterestDatas(userProfileWithVisibleFields, user);
+            return userProfileWithVisibleFields;
+        }
+        else {
+            throw new NotAuthenticatedUserException("Not Authenticated request");
+        }
 
+    }
 
     //default = 20db
     @Transactional
@@ -97,21 +103,8 @@ public class UserService implements UserDetailsService {
 
         LocalDate less = LocalDate.now().minusYears(profileFilter.getMinAge());
         LocalDate more =  LocalDate.now().minusYears(profileFilter.getMaxAge());
-
         List<User> userList = userRepository.findAllByBirthDateIsLessThanEqualAndBirthDateGreaterThanEqual(less, more);
 
-
-
-
-        /*
-
-        List<User> userList = em.createQuery("select u from User u ")
-                .getResultList();
-        List<User> userList = em.createQuery("select u from User u where u.birthDate < :first and u.birthDate > :second")
-                .setParameter("first", LocalDate.now().minusYears(profileFilter.getMinAge()))
-                .setParameter("second", LocalDate.now().minusYears(profileFilter.getMaxAge())).getResultList();
-
-         */
         switch (profileFilter.getLookingFor()){
             case MAN:
                 return getResultList(userList.stream()
@@ -133,43 +126,40 @@ public class UserService implements UserDetailsService {
     public UserProfileWithVisibleFields updateUser(UserProfileWithVisibleFields updatedProfile) {
 
         User currentuser = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        long id = currentuser.getId();
-        User user = em.find(User.class, id);
+        if (currentuser != null){
+            long id = currentuser.getId();
+            User user = em.find(User.class, id);
 
-        if (user.getUserProfile() == null || user.getUserInterest() == null){
-            UserProfile userProfile = new UserProfile();
-            UserInterest userInterest = new UserInterest();
-            //UserProfile beállítása
-            generateUserProfileForUser(userProfile, updatedProfile);
-            //UserInterest beállítása
-            generateUserInterestForUser(userInterest, updatedProfile);
-            //perzisztálása
-            user.setUserProfile(userProfile);
-            user.setUserInterest(userInterest);
-            em.persist(userInterest);
-            em.persist(userProfile);
-            em.persist(user);
+            if (user.getUserProfile() == null || user.getUserInterest() == null){
+                UserProfile userProfile = new UserProfile();
+                UserInterest userInterest = new UserInterest();
+                //UserProfile beállítása
+                generateUserProfileForUser(userProfile, updatedProfile);
+                //UserInterest beállítása
+                generateUserInterestForUser(userInterest, updatedProfile);
+                //perzisztálása
+                user.setUserProfile(userProfile);
+                user.setUserInterest(userInterest);
+                em.persist(userInterest);
+                em.persist(userProfile);
+                em.persist(user);
+            }
+            else{
+
+                UserProfile userProfile = em.find(UserProfile.class, user.getUserProfile().getId());
+                UserInterest userInterest = em.find(UserInterest.class, user.getUserInterest().getId());
+                //UserProfile updatelés
+                generateUserProfileForUser(userProfile, updatedProfile);
+                //UserInterest beállítása
+                generateUserInterestForUser(userInterest, updatedProfile);
+                em.persist(userInterest);
+                em.persist(userProfile);
+            }
+            return updatedProfile;
         }
-        else{
-
-            UserProfile userProfile = em.find(UserProfile.class, user.getUserProfile().getId());
-            UserInterest userInterest = em.find(UserInterest.class, user.getUserInterest().getId());
-            //UserProfile updatelés
-            generateUserProfileForUser(userProfile, updatedProfile);
-            //UserInterest beállítása
-            generateUserInterestForUser(userInterest, updatedProfile);
-            em.persist(userInterest);
-            em.persist(userProfile);
+        else {
+            throw new NotAuthenticatedUserException("Not Authenticated request");
         }
-
-
-        return updatedProfile;
-    }
-
-    //DELETE
-    @Transactional
-    public void deleteUser(){
-        //TODO
     }
 
     @Transactional

@@ -3,6 +3,7 @@ package backend.controllers;
 import backend.dto.userDtos.*;
 import backend.events.OnRegistrationCompleteEvent;
 import backend.exceptions.ExistingUserException;
+import backend.exceptions.NotAuthenticatedUserException;
 import backend.model.userModels.User;
 import backend.services.userServices.UserService;
 import org.slf4j.Logger;
@@ -54,28 +55,34 @@ public class UserController {
     //READ
     @RequestMapping(path = ("/rest/getUser"), method = RequestMethod.GET)
     public UserProfileWithVisibleFields getUser(){
-        return userService.getUser();
+        try{
+            UserProfileWithVisibleFields userProfileWithVisibleFields = userService.getUser();
+            logger.info("Get User profile username: " + userProfileWithVisibleFields.getName());
+            return userProfileWithVisibleFields;
+        }catch (NotAuthenticatedUserException ex){
+            logger.error(ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+        }
     }
-
 
     @RequestMapping(path = ("/rest/profiles"), method = RequestMethod.POST)
     public List<UserProfileWithVisibleFields> getUserList(@RequestBody UserProfileFilterDto filterDto){
         return userService.listingExistingUsers(filterDto);
     }
 
-
     //UPDATE
     @RequestMapping(path = ("/rest/updateUser"), method = RequestMethod.POST)
     public UserProfileWithVisibleFields updateUser(@RequestBody UserProfileWithVisibleFields updatedProfile){
-        return userService.updateUser(updatedProfile);
-    }
 
-    //DELETE
-    @RequestMapping(path = ("/rest/deleteUser"), method = RequestMethod.DELETE)
-    public void deleteUser(){
-        //TODO
+        try {
+            UserProfileWithVisibleFields userProfileWithVisibleFields = userService.updateUser(updatedProfile);
+            logger.info("User updated with: " + userProfileWithVisibleFields.getName());
+            return userProfileWithVisibleFields;
+        }catch (NotAuthenticatedUserException ex){
+            logger.error(ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+        }
     }
-
 
     /**
      * Temporary or technical methods for DEBUG BUILD
