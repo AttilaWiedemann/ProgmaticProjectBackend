@@ -72,8 +72,11 @@ public class DBInitializer {
             ArrayList<User> users = generateDummyUsers();
             for(User user : users){
                 em.persist(user);
-                em.persist(user.getUserInterest());
-                em.persist(user.getUserProfile());
+                if(user.getUserProfile() != null) {
+                    em.persist(user.getUserInterest());
+                }if(user.getUserInterest() != null) {
+                    em.persist(user.getUserProfile());
+                }
             }
         }
     }
@@ -105,6 +108,10 @@ public class DBInitializer {
             user.setUserInterest(userInterest);
             users.add(user);
         }
+    //Add unfinfished User------------------
+            User user = new User("UnfinishedUser", "sajt", "Unfinished@email.com",
+                    LocalDate.now().minusYears(20));
+            users.add(user);
         return users;
     }
 
