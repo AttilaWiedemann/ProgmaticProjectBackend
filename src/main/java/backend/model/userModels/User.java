@@ -53,7 +53,8 @@ public class User implements UserDetails {
         return profilePicture;
     }
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(targetEntity = Image.class, fetch = FetchType.EAGER)
+    @JoinColumn( name = "profilepicture_Id")
    private Image profilePicture;
 
 //    @ManyToOne()

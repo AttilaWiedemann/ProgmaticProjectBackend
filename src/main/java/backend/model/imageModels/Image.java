@@ -19,8 +19,7 @@ public class Image {
         this.user = user;
     }
 
-    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "userId")
+    @OneToOne(mappedBy = "profilePicture")
     private User user;
 
 
