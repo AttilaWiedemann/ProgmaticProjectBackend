@@ -12,4 +12,5 @@ public interface UserRepository extends JpaRepository<User,Long> {
     User findUserById(Long id);
     User findUserByEmail(String eMail);
     List<User> findAllByBirthDateIsLessThanEqualAndBirthDateGreaterThanEqual(LocalDate less, LocalDate more);
+    User findUserByName(String name);
 }
