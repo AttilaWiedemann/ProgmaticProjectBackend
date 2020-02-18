@@ -252,6 +252,8 @@ public class UserProfileWithVisibleFields {
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
         this.birthYear = birthDate.getYear();
+        long years = java.time.temporal.ChronoUnit.YEARS.between( birthDate , LocalDate.now() );
+        this.age = (int) years;
     }
 
     public int getMinAge() {
