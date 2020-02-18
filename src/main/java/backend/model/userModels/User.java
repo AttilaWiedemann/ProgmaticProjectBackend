@@ -14,6 +14,7 @@ import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -55,16 +56,16 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user")
    private Image profilePicture;
 
-    @ManyToOne()
-    private List<Image> Pictures;
+//    @ManyToOne()
+//    private List<Image> Pictures;
 
-    public List<Image> getPictures() {
-        return Pictures;
-    }
-
-    public void setPictures(List<Image> pictures) {
-        Pictures = pictures;
-    }
+//    public List<Image> getPictures() {
+//        return Pictures;
+//    }
+//
+//    public void setPictures(List<Image> pictures) {
+//        Pictures = pictures;
+//    }
 //    @ManyToOne
 //    private List<Image> imageList;
 
