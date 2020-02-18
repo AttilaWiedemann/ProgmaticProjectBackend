@@ -1,11 +1,16 @@
 package backend.services.messageServices;
 
+import backend.controllers.UserController;
 import backend.dto.messageDtos.ConversationDto;
 import backend.exceptions.ExistingConversationException;
 import backend.exceptions.NotExistingConversationException;
 import backend.model.messageModels.Conversation;
 import backend.model.messageModels.ConversationMessage;
+import backend.model.userModels.User;
 import backend.repos.ConversationRepository;
+import backend.repos.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -21,10 +26,13 @@ import java.util.List;
 public class ConversationService {
 
     private ConversationRepository conversationRepository;
+    private UserRepository userRepository;
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public ConversationService(ConversationRepository conversationRepository) {
+    public ConversationService(ConversationRepository conversationRepository, UserRepository userRepository) {
         this.conversationRepository = conversationRepository;
+        this.userRepository = userRepository;
     }
 
     @PersistenceContext
@@ -33,8 +41,47 @@ public class ConversationService {
     @Transactional
     public Conversation createConversation(ConversationDto conversationDto) {
         String loggedInUserName = SecurityContextHolder.getContext().getAuthentication().getName();
+        logger.info("User trying to create a new conversation");
+
+        if (isPartnerExist(conversationDto.getConvPartner())) {
+            logger.info("Partner user found, creating conversation");
+            Conversation ifTheconversationExistThisIsIt = conversationRepository.findConversationByConvPartnerAndConvStarter(loggedInUserName, conversationDto.getConvPartner());
+
+            if (ifTheconversationExistThisIsIt == null) {
+                ifTheconversationExistThisIsIt = conversationRepository.findConversationByConvPartnerAndConvStarter(conversationDto.getConvPartner(), loggedInUserName);
+            }
+
+            if (ifTheconversationExistThisIsIt == null) {
+                Conversation newConversation = new Conversation();
+
+                newConversation.setConvStarter(loggedInUserName);
+                newConversation.setConvPartner(conversationDto.getConvPartner());
+
+                ConversationMessage message = new ConversationMessage();
+                message.setAuthor(loggedInUserName);
+                message.setPartner(conversationDto.getConvPartner());
+                message.setText(conversationDto.getFirstMessage());
+                message.setCreationDate(LocalDateTime.now());
+                message.setConversation(newConversation);
+
+                em.persist(message);
+                em.persist(newConversation);
+                logger.info("User created a new conversation with partner");
+
+                return getConversation(newConversation.getId());
+            } else {
+                logger.info("User didnt create a new conversation because that already exists with that partner");
+                throw new ExistingConversationException("Conversation already exists with partner");
+            }
+
+        } else {
+            logger.info("Not existing user to create conversation error");
+            throw new NotExistingConversationException("Not existing user to create conversation");
+        }
+       /*
         Conversation ifTheconversationExistThisIsIt = conversationRepository.findConversationByConvPartnerAndConvStarter(loggedInUserName, conversationDto.getConvPartner());
-        if (ifTheconversationExistThisIsIt == null) {
+
+       if (ifTheconversationExistThisIsIt == null) {
             ifTheconversationExistThisIsIt = conversationRepository.findConversationByConvPartnerAndConvStarter(conversationDto.getConvPartner(), loggedInUserName);
         }
 
@@ -50,41 +97,66 @@ public class ConversationService {
             message.setText(conversationDto.getFirstMessage());
             message.setCreationDate(LocalDateTime.now());
             message.setConversation(newConversation);
+
             em.persist(message);
-            //newConversation.addMessage(message);
             em.persist(newConversation);
+            logger.info("User created a new conversation with partner");
+
             return getConversation(newConversation.getId());
         } else {
+            logger.info("User didnt create a new conversation because already exist with that partner");
             throw new ExistingConversationException("Conversation already exist with partner");
-            //return getConversation(ifTheconversationExistThisIsIt.getId());
-        }
+        }*/
     }
 
 
+    @Transactional
     public String getPartnerName(Long convId) {
 
-        Conversation conv = em.createQuery("SELECT c FROM Conversation c where c.id = :convId", Conversation.class).setParameter("convId", convId).getSingleResult();
+        Conversation conv = conversationRepository.findConversationById(convId);
+        //Conversation conv = em.createQuery("SELECT c FROM Conversation c where c.id = :convId", Conversation.class).setParameter("convId", convId).getSingleResult();
         return conv.getConvPartner();
 
     }
 
+    @Transactional
     public String getSartnerName(Long convId) {
-        Conversation conv = em.createQuery("SELECT c FROM Conversation c where c.id = :convId", Conversation.class).setParameter("convId", convId).getSingleResult();
+        Conversation conv = conversationRepository.findConversationById(convId);
+        //Conversation conv = em.createQuery("SELECT c FROM Conversation c where c.id = :convId", Conversation.class).setParameter("convId", convId).getSingleResult();
         return conv.getConvStarter();
     }
 
     @Transactional
     public Conversation getConversation(Long convId) {
-        Conversation oneConversation = em.createQuery("SELECT c FROM Conversation c where c.id = :id", Conversation.class)
+        Conversation oneConversation = conversationRepository.findConversationById(convId);
+        /*Conversation oneConversation = em.createQuery("SELECT c FROM Conversation c where c.id = :id", Conversation.class)
                 .setParameter("id", convId)
                 .getSingleResult();
-
+*/
         return oneConversation;
     }
 
     @Transactional
     public void createMessage(Long convId, String firstMessage) {
-        String loggedInUserName = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!isConversationExist(convId)) {
+            throw new NotExistingConversationException("No conversation with adressee. (Or just not started with partner)");
+        } else {
+            String loggedInUserName = SecurityContextHolder.getContext().getAuthentication().getName();
+            ConversationMessage newMessage = new ConversationMessage();
+            newMessage.setAuthor(loggedInUserName);
+
+            if (loggedInUserName.equals(getPartnerName(convId))) {
+                newMessage.setPartner(getSartnerName(convId));
+            } else {
+                newMessage.setPartner(getPartnerName(convId));
+            }
+
+            newMessage.setConversation(getConversation(convId));
+            newMessage.setCreationDate(LocalDateTime.now());
+            newMessage.setText(firstMessage);
+            em.persist(newMessage);
+        }
+        /*String loggedInUserName = SecurityContextHolder.getContext().getAuthentication().getName();
         ConversationMessage newMessage = new ConversationMessage();
         newMessage.setAuthor(loggedInUserName);
 
@@ -97,7 +169,7 @@ public class ConversationService {
         newMessage.setConversation(getConversation(convId));
         newMessage.setCreationDate(LocalDateTime.now());
         newMessage.setText(firstMessage);
-        em.persist(newMessage);
+        em.persist(newMessage);*/
 
     }
 
@@ -125,15 +197,37 @@ public class ConversationService {
 
 
     @Transactional
+    public boolean isConversationExist(Long id) {
+        Conversation c = conversationRepository.findConversationById(id);
+        if (c == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Transactional
+    public boolean isPartnerExist(String partnerName) {
+        User u = userRepository.findUserByName(partnerName);
+        if (u == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
+    @Transactional
     public ArrayList<Conversation> getAllConversation() {
-        List<Conversation> allConversation = em.createQuery("SELECT c FROM Conversation c", Conversation.class).getResultList(); // átírni
+        List<Conversation> allConversation = em.createQuery("SELECT c FROM Conversation c", Conversation.class).getResultList();
+        //nincs bemenő paramétere a lekérdezésnek
         if (allConversation.size() < 1) {
             throw new NotExistingConversationException("There is no conversations at all yet.");
         } else {
             return (ArrayList<Conversation>) allConversation;
         }
     }
-
+ /* //nincs használatban
     @Transactional
     public Conversation conversationByParticipants(String userOne, String userTwo) {
         Conversation conversation = em.createQuery("SELECT c FROM Conversation c where c.convStarter = :convStarter and c.convPartner =:convPartner", Conversation.class)
@@ -146,10 +240,10 @@ public class ConversationService {
                     .setParameter("convPartner", userOne)
                     .getSingleResult();
         }
-        //if conversation
         return conversation;
-    }
+    } */
 
+     /* // nincs használatban
     @Transactional
     public boolean doesConversationAlreadyExist(String loggedInUserName, String convPartner) {
         Conversation conversation = em.createQuery("SELECT c FROM Conversation c where c.convStarter = :convStarter and c.convPartner =:convPartner", Conversation.class)
@@ -161,5 +255,5 @@ public class ConversationService {
         } else {
             return false;
         }
-    }
+    } */
 }
