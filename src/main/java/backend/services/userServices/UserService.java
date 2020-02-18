@@ -151,7 +151,7 @@ public class UserService implements UserDetailsService {
             long id = currentuser.getId();
             User user = em.find(User.class, id);
 
-            if (user.getUserProfile() == null || user.getUserInterest() == null){
+            if (user.getUserProfile() == null && user.getUserInterest() == null){
                 UserProfile userProfile = new UserProfile();
                 UserInterest userInterest = new UserInterest();
                 //UserProfile beállítása
