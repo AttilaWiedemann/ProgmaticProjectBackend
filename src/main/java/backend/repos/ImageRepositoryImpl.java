@@ -1,6 +1,6 @@
 package backend.repos;
 
-import backend.model.Image;
+import backend.model.imageModels.Image;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 

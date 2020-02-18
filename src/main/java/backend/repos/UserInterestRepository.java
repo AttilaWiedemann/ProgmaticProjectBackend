@@ -1,6 +1,6 @@
 package backend.repos;
 
-import backend.model.UserInterest;
+import backend.model.userModels.UserInterest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

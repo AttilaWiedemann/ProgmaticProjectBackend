@@ -1,105 +1,88 @@
 package backend.controllers;
 
-import backend.dto.FilterDto;
-import backend.dto.UserDto;
-import backend.dto.UserInterestDto;
-import backend.dto.UserProfileDto;
+import backend.dto.userDtos.*;
 import backend.events.OnRegistrationCompleteEvent;
-import backend.model.User;
-import backend.repos.UserRepository;
-import backend.services.UserInterestService;
+import backend.exceptions.ExistingUserException;
+import backend.model.userModels.User;
+import backend.services.userServices.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import backend.services.UserService;
 import org.springframework.web.context.request.WebRequest;
-
+import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
-import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 public class UserController {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private UserService userService;
-    private UserRepository userRepository;
-    private UserInterestService userInterestService;
     private ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    public UserController(UserService userService,
-                          UserInterestService userInterestService,
-                          UserRepository userRepository,
-                          ApplicationEventPublisher eventPublisher) {
+    public UserController(UserService userService, ApplicationEventPublisher eventPublisher) {
         this.userService = userService;
-        this.userRepository = userRepository;
-        this.userInterestService = userInterestService;
         this.eventPublisher = eventPublisher;
     }
 
+    //CREATE
+    @RequestMapping(path = ("/rest/register"), method = RequestMethod.POST)
+    public UserDto register(@Valid @RequestBody UserDto userDto, WebRequest request) {
+
+        try {
+            User user = userService.createUser(userDto);
+            String logMessage = String.format("User created with %s email address.", userDto.getEmail());
+            logger.info(logMessage);
+            String appUrl = request.getContextPath();
+            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, request.getLocale(), appUrl));
+            logger.info("Registration complete event triggered.");
+            return userDto;
+        } catch (ExistingUserException ex) {
+            logger.error(ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+        } catch (Exception ex){
+            logger.error(ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+        }
+    }
+
+    //READ
+    @RequestMapping(path = ("/rest/getUser"), method = RequestMethod.GET)
+    public UserProfileWithVisibleFields getUser(){
+        return userService.getUser();
+    }
 
 
+    @RequestMapping(path = ("/rest/profiles"), method = RequestMethod.POST)
+    public List<UserProfileWithVisibleFields> getUserList(@RequestBody UserProfileFilterDto filterDto){
+        return userService.listingExistingUsers(filterDto);
+    }
+
+
+    //UPDATE
+    @RequestMapping(path = ("/rest/updateUser"), method = RequestMethod.POST)
+    public UserProfileWithVisibleFields updateUser(@RequestBody UserProfileWithVisibleFields updatedProfile){
+        return userService.updateUser(updatedProfile);
+    }
+
+    //DELETE
+    @RequestMapping(path = ("/rest/deleteUser"), method = RequestMethod.DELETE)
+    public void deleteUser(){
+        //TODO
+    }
+
+
+    /**
+     * Temporary or technical methods for DEBUG BUILD
+     */
     @GetMapping("/get")
     public Long get(){
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return user.getId();
     }
-
-    @GetMapping("/user/{id}")
-    public User getUser(@PathVariable Long id){
-       return userRepository.findUserById(id);
-    }
-
-    @RequestMapping(path = ("/rest/user"), method = RequestMethod.GET)
-    public UserDto sampleUser() {
-        UserDto sampleUser = new UserDto();
-        sampleUser.setEmail("e@mail.cim");
-        sampleUser.setBirthDate(LocalDate.now().minusDays(2));
-        //sampleUser.setGender(Gender.MAN);
-        //sampleUser.setIntrest(Intrest.WOMAN);
-        sampleUser.setName("Ildi bácsi");
-        sampleUser.setPassword("dolgok");
-        return sampleUser;
-    }
-
-    @RequestMapping(path = ("/rest/test"), method = RequestMethod.GET)
-    public FilterDto sampleFilter(){
-        FilterDto sampleFilter = new FilterDto();
-        sampleFilter.setMinAge(0);
-        sampleFilter.setMaxAge(100);
-        return sampleFilter;
-    }
-
-
-    @RequestMapping(path = ("/rest/register"), method = RequestMethod.POST)
-    public UserDto register(@Valid @RequestBody UserDto user, WebRequest request) {
-        UserDto userDtoResponse = userService.createUser(user);
-        User unVerificatedUser = null;
-
-        if (userDtoResponse != null){
-            unVerificatedUser = userService.getUserByEmail(userDtoResponse.getEmail());
-        }
-        try {
-            String appUrl = request.getContextPath();
-            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(unVerificatedUser, request.getLocale(), appUrl));
-        } catch (Exception me) {
-
-        }
-
-        return userDtoResponse;
-    }
-
-    @RequestMapping(path = ("/rest/user/profile/{id}"), method = RequestMethod.POST)
-    public UserProfileDto userProfileDto(@RequestBody UserProfileDto userProfileDto, Long id) {
-        return userService.addOptionalFields(userProfileDto, id);
-    }
-    @RequestMapping(path = ("/rest/user/profile/{id}"), method = RequestMethod.PUT)
-    public UserProfileDto updateUserProfile(@RequestBody UserProfileDto userProfileDto, Long id) {
-        return userService.addOptionalFields(userProfileDto, id);
-    }
-    @RequestMapping(path =("/rest/user/profile/{id}/interest"),method = RequestMethod.POST)
-    public UserInterestDto addUserInteresttoProfile(@RequestBody UserInterestDto userInterestDto, Long id){
-        return userInterestService.creatUserIterest(userInterestDto,id);
-    }
-
 }
