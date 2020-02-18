@@ -9,7 +9,7 @@ public class UserProfileFilterDto {
     private int maxAge;
     private Gender lookingFor;
     private int numberPage;
-    final int numberSize = 5;
+    final int numberSize = 8;
 
 
     public UserProfileFilterDto(){}

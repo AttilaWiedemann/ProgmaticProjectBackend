@@ -5,6 +5,7 @@ import backend.dto.userDtos.UserProfileFilterDto;
 import backend.dto.userDtos.UserProfileWithVisibleFields;
 import backend.enums.*;
 import backend.exceptions.ExistingUserException;
+import backend.exceptions.NonExistingPageException;
 import backend.exceptions.NotAuthenticatedUserException;
 import backend.exceptions.NotExistingUserException;
 import backend.model.userModels.User;
@@ -99,8 +100,9 @@ public class UserService implements UserDetailsService {
 
     //default = 20db
     @Transactional
-    public List<UserProfileWithVisibleFields> listingExistingUsers(UserProfileFilterDto profileFilter) {
-
+    public List<UserProfileWithVisibleFields> listingExistingUsers(UserProfileFilterDto profileFilter)
+    throws NonExistingPageException
+    {
         LocalDate less = LocalDate.now().minusYears(profileFilter.getMinAge());
         LocalDate more =  LocalDate.now().minusYears(profileFilter.getMaxAge());
         List<User> userList = userRepository.findAllByBirthDateIsLessThanEqualAndBirthDateGreaterThanEqual(less, more);
@@ -128,10 +130,10 @@ public class UserService implements UserDetailsService {
     }
 
     private List<UserProfileWithVisibleFields> breakToPages(int pageNumber, int pageSize,
-                                                            List<UserProfileWithVisibleFields> users){
+                                            List<UserProfileWithVisibleFields> users) throws NonExistingPageException{
         int startingIndex = (pageNumber -1) * pageSize;
-            if(startingIndex > users.size() - 1 || startingIndex < 1){
-                //TODO throw exception
+            if(startingIndex > users.size() - 1 || startingIndex < 0){
+                throw new NonExistingPageException("Result list does not have this many pages: " + pageNumber);
             }
         int endingIndex = startingIndex + pageSize;
             if(endingIndex > users.size() - 1){
