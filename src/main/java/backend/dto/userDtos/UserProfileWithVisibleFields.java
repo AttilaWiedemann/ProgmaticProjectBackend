@@ -31,6 +31,7 @@ public class UserProfileWithVisibleFields {
     private boolean likesCulture;
     private boolean likesTravels;
     private boolean likesPolitics;
+    private int birthYear;
 
     public UserProfileWithVisibleFields(){}
     public UserProfileWithVisibleFields(LocalDate birthDate){
@@ -73,6 +74,7 @@ public class UserProfileWithVisibleFields {
         this.gender = gender;
         this.interest = interest.toString();
         this.likesTechnology = likesTechnology;
+        this.birthYear = birthDate.getYear();
     }
 
     public String getName() {
@@ -249,6 +251,7 @@ public class UserProfileWithVisibleFields {
 
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
+        this.birthYear = birthDate.getYear();
     }
 
     public int getMinAge() {
@@ -273,5 +276,9 @@ public class UserProfileWithVisibleFields {
 
     public void setLikesTechnology(boolean likesTechnology) {
         this.likesTechnology = likesTechnology;
+    }
+
+    public int getBirthYear() {
+        return birthYear;
     }
 }
