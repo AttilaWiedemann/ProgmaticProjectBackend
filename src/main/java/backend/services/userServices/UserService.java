@@ -81,9 +81,9 @@ public class UserService implements UserDetailsService {
     }
 
     //READ
+
     @Transactional
-    public UserProfileWithVisibleFields getUser() {
-        User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public UserProfileWithVisibleFields getUser(User user) {
         if (user != null){
             UserProfileWithVisibleFields userProfileWithVisibleFields = new UserProfileWithVisibleFields();
             addUserBaseDatas(userProfileWithVisibleFields, user);
@@ -104,18 +104,21 @@ public class UserService implements UserDetailsService {
         LocalDate less = LocalDate.now().minusYears(profileFilter.getMinAge());
         LocalDate more =  LocalDate.now().minusYears(profileFilter.getMaxAge());
         List<User> userList = userRepository.findAllByBirthDateIsLessThanEqualAndBirthDateGreaterThanEqual(less, more);
-
         switch (profileFilter.getLookingFor()){
             case MAN:
                 return getResultList(userList.stream()
+                        .filter(user -> user.getUserProfile() != null)
                         .filter(user -> user.getUserProfile().getGender().toString().equals("MAN"))
                         .collect(Collectors.toList()));
             case WOMAN:
                 return getResultList(userList.stream()
+                        .filter(user -> user.getUserProfile() != null)
                         .filter(user -> user.getUserProfile().getGender().toString().equals("WOMAN"))
                         .collect(Collectors.toList()));
             default:
                 return getResultList(userList);
+
+
         }
     }
 
@@ -178,7 +181,7 @@ public class UserService implements UserDetailsService {
     private List<UserProfileWithVisibleFields> getResultList(List<User> userList){
         List<UserProfileWithVisibleFields> returnableList = new ArrayList<>();
         for(User user : userList){
-            UserProfileWithVisibleFields userProfileWithVisibleFields = getUser();
+            UserProfileWithVisibleFields userProfileWithVisibleFields = getUser(user);
             returnableList.add(userProfileWithVisibleFields);
         }
         return returnableList;

@@ -56,7 +56,10 @@ public class UserController {
     @RequestMapping(path = ("/rest/getUser"), method = RequestMethod.GET)
     public UserProfileWithVisibleFields getUser(){
         try{
-            UserProfileWithVisibleFields userProfileWithVisibleFields = userService.getUser();
+            UserProfileWithVisibleFields userProfileWithVisibleFields = userService.getUser(
+                    (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()
+
+            );
             logger.info("Get User profile username: " + userProfileWithVisibleFields.getName());
             return userProfileWithVisibleFields;
         }catch (NotAuthenticatedUserException ex){
