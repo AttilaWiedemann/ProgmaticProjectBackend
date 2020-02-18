@@ -62,6 +62,29 @@ public class DBInitializer {
         em.persist(exampleConversation);
         em.persist(firstExampleMessage);
         em.persist(secondExampleMessage);
+
+        Conversation secondExampleConversation = new Conversation();
+        secondExampleConversation.setConvStarter("User1");
+        secondExampleConversation.setConvPartner("Habi");
+
+        ConversationMessage secondFirstExampleMessage = new ConversationMessage();
+        secondFirstExampleMessage.setAuthor("User1");
+        secondFirstExampleMessage.setPartner("Habi");
+        secondFirstExampleMessage.setCreationDate(LocalDateTime.now().minusHours(4));
+        secondFirstExampleMessage.setText("user1-tpl habinak elso uzenet");
+        secondFirstExampleMessage.setConversation(secondExampleConversation);
+
+        ConversationMessage secondSecondExampleMessage = new ConversationMessage();
+        secondSecondExampleMessage.setAuthor("Habi");
+        secondSecondExampleMessage.setPartner("User1");
+        secondSecondExampleMessage.setCreationDate(LocalDateTime.now().minusHours(3));
+        secondSecondExampleMessage.setText("unfinishedtol habinak (masodik uzenet)");
+        secondSecondExampleMessage.setConversation(secondExampleConversation);
+
+        em.persist(secondExampleConversation);
+        em.persist(secondFirstExampleMessage);
+        em.persist(secondSecondExampleMessage);
+
     }
 
     private void createAuthoritiesIfNotExist() {
