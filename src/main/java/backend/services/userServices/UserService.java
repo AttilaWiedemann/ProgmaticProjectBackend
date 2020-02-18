@@ -106,20 +106,38 @@ public class UserService implements UserDetailsService {
         List<User> userList = userRepository.findAllByBirthDateIsLessThanEqualAndBirthDateGreaterThanEqual(less, more);
         switch (profileFilter.getLookingFor()){
             case MAN:
-                return getResultList(userList.stream()
+                return breakToPages(
+                        profileFilter.getNumberPage(), profileFilter.getNumberSize(),
+                        getResultList(userList.stream()
                         .filter(user -> user.getUserProfile() != null)
                         .filter(user -> user.getUserProfile().getGender().toString().equals("MAN"))
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toList())));
             case WOMAN:
-                return getResultList(userList.stream()
+                return breakToPages(
+                        profileFilter.getNumberPage(), profileFilter.getNumberSize(),
+                        getResultList(userList.stream()
                         .filter(user -> user.getUserProfile() != null)
                         .filter(user -> user.getUserProfile().getGender().toString().equals("WOMAN"))
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toList())));
             default:
-                return getResultList(userList);
+                return breakToPages(
+                        profileFilter.getNumberPage(), profileFilter.getNumberSize(), getResultList(userList));
 
 
         }
+    }
+
+    private List<UserProfileWithVisibleFields> breakToPages(int pageNumber, int pageSize,
+                                                            List<UserProfileWithVisibleFields> users){
+        int startingIndex = (pageNumber -1) * pageSize;
+            if(startingIndex > users.size() - 1 || startingIndex < 1){
+                //TODO throw exception
+            }
+        int endingIndex = startingIndex + pageSize;
+            if(endingIndex > users.size() - 1){
+                endingIndex = users.size() -1;
+            }
+        return users.subList(startingIndex, endingIndex);
     }
 
 
