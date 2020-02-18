@@ -111,7 +111,13 @@ public class DBInitializer {
     //Add unfinfished User------------------
             User user = new User("UnfinishedUser", "sajt", "Unfinished@email.com",
                     LocalDate.now().minusYears(20));
+            user.setEnabled(true);
             users.add(user);
+    //Adds Habi-----------------------------
+            User habi = new User("Habi", "alap", "habi@mail.hu",
+                    LocalDate.now().minusYears(33));
+            users.add(habi);
+            habi.setEnabled(true);
         return users;
     }
 
