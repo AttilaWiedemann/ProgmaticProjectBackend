@@ -251,6 +251,7 @@ public class UserService implements UserDetailsService {
         userProfileWithVisibleFields.setId(user.getId());
         userProfileWithVisibleFields.setName(user.getName());
         userProfileWithVisibleFields.setBirthDate(user.getBirthDate());
+        userProfileWithVisibleFields.setImgUrl(user.getProfilePicture().getUrl());
     }
 
     private void addUserProfileDatas(UserProfileWithVisibleFields userProfileWithVisibleFields, User user) {
