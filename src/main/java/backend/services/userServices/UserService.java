@@ -77,7 +77,7 @@ public class UserService implements UserDetailsService {
 
         if (userRepository.findUserByEmail(userDto.getEmail()) == null) {
             User user = loadUserWithUserDto(userDto);
-            user.setProfilePicture(imageRepository.findByUrl("rest/profilepicture/1"));
+            user.setProfilePicture(imageRepository.findByUrl("/rest/profilepicture/1"));
             em.persist(user);
             return user;
         }
