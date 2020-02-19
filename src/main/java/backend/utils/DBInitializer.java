@@ -1,24 +1,32 @@
 package backend.utils;
 
 import backend.enums.*;
+import backend.model.imageModels.Image;
 import backend.model.messageModels.Conversation;
 import backend.model.messageModels.ConversationMessage;
 import backend.model.userModels.Authority;
 import backend.model.userModels.User;
 import backend.model.userModels.UserInterest;
 import backend.model.userModels.UserProfile;
+import backend.services.imageServices.ImageService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.projection.ProjectionInformation;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.ServletException;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
 
 @Component
@@ -26,15 +34,21 @@ public class DBInitializer {
 
     @PersistenceContext
     private EntityManager em;
+    private ImageService imageService;
+
+    @Autowired
+    public DBInitializer(ImageService imageService) {
+        this.imageService = imageService;
+    }
 
     @EventListener(ContextRefreshedEvent.class)
-    public void onAppStartup(ContextRefreshedEvent ev) throws ServletException {
+    public void onAppStartup(ContextRefreshedEvent ev) throws ServletException, IOException {
         DBInitializer me = ev.getApplicationContext().getBean(DBInitializer.class);
         me.init();
     }
 
     @Transactional
-    public void init() {
+    public void init() throws IOException {
         createAuthoritiesIfNotExist();
         createUsersIfNotExist();
         createOneConversationWithSomeMessages();
@@ -97,7 +111,7 @@ public class DBInitializer {
         }
     }
 
-    private void createUsersIfNotExist() {
+    private void createUsersIfNotExist() throws IOException {
         long userCount = em.createQuery("select count(u) from User u", Long.class).getSingleResult();
 
         if (userCount == 0) {
@@ -121,7 +135,13 @@ public class DBInitializer {
             //em.persist(admin);
              */
             ArrayList<User> users = generateDummyUsers();
+            Image image = new Image();
+            File file = new File("src/DefaultProfilePicture.png");
+            image.setBytes( imageService.convertToByte(file));
+            image.setUrl("rest/profilepicture/1");
+            em.persist(image);
             for(User user : users){
+                user.setProfilePicture(image);
                 em.persist(user);
                 if(user.getUserProfile() != null) {
                     em.persist(user.getUserInterest());

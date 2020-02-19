@@ -14,6 +14,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Service
 public class ImageService {
@@ -42,14 +44,14 @@ public class ImageService {
 
     @Transactional
     public void updateImageFile(MultipartFile file, Long id) throws IOException {
-        byte[] byteObjects = conversationToByte(file);
+        byte[] byteObjects = convertToByte(file);
         User user = userRepository.findUserById(id);
         user.setProfilePicture(null);
         if (user.getProfilePicture() == null) {
         }
     }
 
-    public byte[] conversationToByte(MultipartFile file) throws IOException {
+    public byte[] convertToByte(MultipartFile file) throws IOException {
         byte[] byteObjects = new byte[file.getBytes().length];
 
         int i = 0;
@@ -76,6 +78,10 @@ public class ImageService {
             throw new ExistingUserException("Már van feltöltve profilkép");
         }
 
+    }
+    public byte[] convertToByte(File file) throws IOException {
+        byte[] byteObjects = Files.readAllBytes(file.toPath());
+        return byteObjects;
     }
 }
 
