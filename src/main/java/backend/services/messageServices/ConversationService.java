@@ -38,6 +38,9 @@ public class ConversationService {
     @PersistenceContext
     EntityManager em;
 
+
+    //creates new conversation, with convdto (adressee, first message)
+    //checks if conversation already exist between logged in user and the adressee
     @Transactional
     public Conversation createConversation(ConversationDto conversationDto) {
         String loggedInUserName = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -110,6 +113,7 @@ public class ConversationService {
     }
 
 
+    //by id of a conversation, gets the name of the adressee in that conversation
     @Transactional
     public String getPartnerName(Long convId) {
 
@@ -119,6 +123,7 @@ public class ConversationService {
 
     }
 
+    //by id of a conversation, gets the name of the starter of that conversation
     @Transactional
     public String getSartnerName(Long convId) {
         Conversation conv = conversationRepository.findConversationById(convId);
@@ -126,6 +131,7 @@ public class ConversationService {
         return conv.getConvStarter();
     }
 
+    //by id, gets the conversation
     @Transactional
     public Conversation getConversation(Long convId) {
         Conversation oneConversation = conversationRepository.findConversationById(convId);
@@ -136,6 +142,9 @@ public class ConversationService {
         return oneConversation;
     }
 
+    //creating a new message (if conversation exists)
+    //with input of an id (conversation) and the text
+    //throws error if no conversations with whom user wants to send the message
     @Transactional
     public void createMessage(Long convId, String firstMessage) {
         if (!isConversationExist(convId)) {
@@ -173,6 +182,8 @@ public class ConversationService {
 
     }
 
+    //gets an arraylist of conversations belongs to user that logged in right now
+    //if no conversations, throws exception
     @Transactional
     public ArrayList<Conversation> getAllConversationOfUser() {
         String loggedInUserName = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -196,6 +207,7 @@ public class ConversationService {
     }
 
 
+    //checks by id if conversation exists
     @Transactional
     public boolean isConversationExist(Long id) {
         Conversation c = conversationRepository.findConversationById(id);
@@ -206,6 +218,7 @@ public class ConversationService {
         }
     }
 
+    //checks by an username if exists
     @Transactional
     public boolean isPartnerExist(String partnerName) {
         User u = userRepository.findUserByName(partnerName);
@@ -216,7 +229,8 @@ public class ConversationService {
         }
     }
 
-
+    //gets all of the conversations from the db
+    //throws error is no convers
     @Transactional
     public ArrayList<Conversation> getAllConversation() {
         List<Conversation> allConversation = em.createQuery("SELECT c FROM Conversation c", Conversation.class).getResultList();

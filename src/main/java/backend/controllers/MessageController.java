@@ -25,6 +25,7 @@ public class MessageController {
         this.conversationService = conversationService;
     }
 
+    //creates new message in conversation with id (from newMessageDto)
     @RequestMapping(path = ("/message"), method = RequestMethod.POST)
     public Conversation newMessage(@RequestBody NewMessageDto newMessageDto) {
         logger.info("User trying to write new message");
