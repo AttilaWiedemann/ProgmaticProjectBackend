@@ -54,6 +54,7 @@ public class DBInitializer {
         createOneConversationWithSomeMessages();
     }
 
+    //two example conversations with two messages booth
     private void createOneConversationWithSomeMessages() {
         Conversation exampleConversation = new Conversation();
         exampleConversation.setConvStarter("Habi");
