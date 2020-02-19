@@ -3,6 +3,7 @@ package backend.controllers;
 import backend.dto.userDtos.*;
 import backend.events.OnRegistrationCompleteEvent;
 import backend.exceptions.ExistingUserException;
+import backend.exceptions.NonExistingPageException;
 import backend.exceptions.NotAuthenticatedUserException;
 import backend.model.userModels.User;
 import backend.services.userServices.UserService;
@@ -56,7 +57,10 @@ public class UserController {
     @RequestMapping(path = ("/rest/getUser"), method = RequestMethod.GET)
     public UserProfileWithVisibleFields getUser(){
         try{
-            UserProfileWithVisibleFields userProfileWithVisibleFields = userService.getUser();
+            UserProfileWithVisibleFields userProfileWithVisibleFields = userService.getUser(
+                    (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()
+
+            );
             logger.info("Get User profile username: " + userProfileWithVisibleFields.getName());
             return userProfileWithVisibleFields;
         }catch (NotAuthenticatedUserException ex){
@@ -67,7 +71,14 @@ public class UserController {
 
     @RequestMapping(path = ("/rest/profiles"), method = RequestMethod.POST)
     public List<UserProfileWithVisibleFields> getUserList(@RequestBody UserProfileFilterDto filterDto){
-        return userService.listingExistingUsers(filterDto);
+        try {
+            List<UserProfileWithVisibleFields> userList = userService.listingExistingUsers(filterDto);
+            logger.info("Listing and filtering users");
+            return userList;
+        }catch (NonExistingPageException ex){
+            logger.error(ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+        }
     }
 
     //UPDATE

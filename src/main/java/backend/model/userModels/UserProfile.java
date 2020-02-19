@@ -24,17 +24,15 @@ public class UserProfile implements Externalizable {
 
     private int height;
 
-    private Enum bodyShape;
+    private BodyShape bodyShape;
 
-    private Enum eyeColor;
+    private EyeColor eyeColor;
 
-    private Enum hairColor;
+    private HairColor hairColor;
 
-    private Enum horoscope;
+    private Horoscope horoscope;
 
     private Gender gender;
-
-    private String genderforEntity;
 
     private boolean smoking;
 
@@ -76,35 +74,35 @@ public class UserProfile implements Externalizable {
         this.height = height;
     }
 
-    public Enum getBodyShape() {
+    public BodyShape getBodyShape() {
         return bodyShape;
     }
 
-    public void setBodyShape(Enum bodyShape) {
+    public void setBodyShape(BodyShape bodyShape) {
         this.bodyShape = bodyShape;
     }
 
-    public Enum getEyeColor() {
+    public EyeColor getEyeColor() {
         return eyeColor;
     }
 
-    public void setEyeColor(Enum eyeColor) {
+    public void setEyeColor(EyeColor eyeColor) {
         this.eyeColor = eyeColor;
     }
 
-    public Enum getHairColor() {
+    public HairColor getHairColor() {
         return hairColor;
     }
 
-    public void setHairColor(Enum hairColor) {
+    public void setHairColor(HairColor hairColor) {
         this.hairColor = hairColor;
     }
 
-    public Enum getHoroscope() {
+    public Horoscope getHoroscope() {
         return horoscope;
     }
 
-    public void setHoroscope(Enum horoscope) {
+    public void setHoroscope(Horoscope horoscope) {
         this.horoscope = horoscope;
     }
 
@@ -114,14 +112,6 @@ public class UserProfile implements Externalizable {
 
     public void setSmoking(boolean smoking) {
         this.smoking = smoking;
-    }
-
-    public String getGenderforEntity() {
-        return genderforEntity;
-    }
-
-    public void setGenderforEntity(String genderforEntity) {
-        this.genderforEntity = genderforEntity;
     }
 
     public UserProfile() {
@@ -135,8 +125,8 @@ public class UserProfile implements Externalizable {
         this.gender = gender;
     }
 
-    public UserProfile(String aboutMe, String city, int height, Enum<BodyShape> bodyShape, Enum<EyeColor> eyeColor,
-                       Enum<HairColor> hairColor, Enum<Horoscope> horoscope, boolean isSmoking, Gender gender){
+    public UserProfile(String aboutMe, String city, int height, BodyShape bodyShape, EyeColor eyeColor,
+                       HairColor hairColor, Horoscope horoscope, boolean isSmoking, Gender gender){
         this.aboutMe = aboutMe;
         this.city = city;
         this.height = height;
@@ -146,7 +136,6 @@ public class UserProfile implements Externalizable {
         this.smoking = isSmoking;
         this.gender = gender;
         this.eyeColor = eyeColor;
-        this.genderforEntity = gender.toString();
     }
 
     @Override

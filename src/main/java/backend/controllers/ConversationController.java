@@ -25,6 +25,7 @@ public class ConversationController {
         this.conversationService = conversationService;
     }
 
+    //gets all the conversations belongs to the logged in user
     @RequestMapping(path = ("/conversation"), method = RequestMethod.GET)
     public ArrayList<Conversation> allConversation() {
         try {
@@ -40,6 +41,7 @@ public class ConversationController {
         }
     }
 
+    //makes new conversation (json, convDto (partner, first message)
     @RequestMapping(path = ("/conversation"), method = RequestMethod.POST)
     public Conversation newConversation(@RequestBody ConversationDto conversationDto) {
         try {
@@ -52,6 +54,7 @@ public class ConversationController {
         }
     }
 
+    //gets one conversation, by its id
     @RequestMapping(path = ("/conversation/{id}"), method = RequestMethod.GET)
     public Conversation oneConversation(@PathVariable("id") Long id) {
         return conversationService.getConversation(id);
