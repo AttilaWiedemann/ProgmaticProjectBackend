@@ -139,7 +139,7 @@ public class DBInitializer {
             Image image = new Image();
             File file = new File("src/DefaultProfilePicture.png");
             image.setBytes( imageService.convertToByte(file));
-            image.setUrl("rest/profilepicture/1");
+            image.setUrl("/rest/profilepicture/1");
             em.persist(image);
             for(User user : users){
                 user.setProfilePicture(image);

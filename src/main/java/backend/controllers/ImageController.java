@@ -29,17 +29,28 @@ public class ImageController {
         this.userRepository = userRepository;
     }
 
-    @PostMapping("/rest/profilepicture")
-    public ResponseEntity handleImagePost(MultipartFile file) throws IOException {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        imageService.setDefaultImageFile(user.getId());
-        return new ResponseEntity(HttpStatus.OK);
-    }
-//    @PostMapping("/rest/updatepicture")
-//    public ResponseEntity updateProfilePicture(MultipartFile file){
+//    @PostMapping("/rest/profilepicture")
+//    public ResponseEntity handleImagePost(MultipartFile file) {
 //        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//
+//        try {
+//            imageService.updateImageFile(file, user.getId());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            //TODO nem megfelelő képformátum
+//        }
+//        return new ResponseEntity(HttpStatus.OK);
 //    }
+   @PostMapping("/rest/updatepicture")
+    public ResponseEntity updateProfilePicture(MultipartFile file){
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+       try {
+           imageService.updateImageFile(file,user.getId());
+       } catch (IOException e) {
+           e.printStackTrace();
+           //TODO exeption létrehozás
+       }
+    return new ResponseEntity(HttpStatus.OK);
+   }
 
     @GetMapping(path = "/rest/profilpicture/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
     public String imageUrl(@PathVariable("id") Long id){
@@ -47,11 +58,13 @@ public class ImageController {
         return image.getUrl();
     }
 
-    @GetMapping(path = "/rest/profilpicture/", produces = MediaType.IMAGE_JPEG_VALUE)
-    public String profilePictureUrl(){
+    @GetMapping(path = "/rest/profilpicture/", produces = MediaType.IMAGE_JPEG_VALUE )
+    public byte[] profilePictureUrl(){
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userRepository.findUserById(user.getId()).getProfilePicture().getUrl();
-       }
+       // return userRepository.findUserById(user.getId()).getProfilePicture().getUrl();
+
+        return imageRepository.findByUserId(user.getId()).getBytes();
+    }
     @GetMapping(path = "/rest/profilepicture/{id}")
     public byte[] image(@PathVariable ("id")Long id){
         return imageRepository.findById(id).get().getBytes();

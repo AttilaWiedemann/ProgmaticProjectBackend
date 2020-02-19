@@ -34,21 +34,19 @@ public class ImageService {
     @Transactional
     public void setDefaultImageFile( Long id) throws IOException {
         User user = userRepository.findUserById(id);
-        byte[] byteObjects = imageRepository.findByUrl("default").getBytes();
-        saveImageFile(user, byteObjects);
-        MultipartFile file = null;
-        assert file != null;
-        file.transferTo(new File("resources/static/images/DefaultProfilePicture.png"));
-
+        user.setProfilePicture(imageRepository.findByUrl("rest/profilepicture/1"));
+        em.persist(user);
     }
 
     @Transactional
     public void updateImageFile(MultipartFile file, Long id) throws IOException {
         byte[] byteObjects = convertToByte(file);
         User user = userRepository.findUserById(id);
-        user.setProfilePicture(null);
-        if (user.getProfilePicture() == null) {
+        if (!user.getProfilePicture().getUrl().equals("rest/profilepicture/1")) {
+        imageRepository.deleteById(user.getProfilePicture().getId());
         }
+        user.setProfilePicture(null);
+        saveImageFile(user,byteObjects);
     }
 
     public byte[] convertToByte(MultipartFile file) throws IOException {
