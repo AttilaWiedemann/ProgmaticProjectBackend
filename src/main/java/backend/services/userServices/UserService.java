@@ -8,10 +8,12 @@ import backend.exceptions.ExistingUserException;
 import backend.exceptions.NonExistingPageException;
 import backend.exceptions.NotAuthenticatedUserException;
 import backend.exceptions.NotExistingUserException;
+import backend.model.imageModels.Image;
 import backend.model.userModels.User;
 import backend.model.userModels.UserInterest;
 import backend.model.userModels.UserProfile;
 import backend.model.emailModels.VerificationToken;
+import backend.repos.ImageRepository;
 import backend.repos.UserRepository;
 import backend.services.emailServices.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,7 @@ import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,14 +37,16 @@ public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
     private TokenService tokenService;
+    private ImageRepository imageRepository;
 
     @PersistenceContext
     EntityManager em;
 
     @Autowired
-    public UserService(UserRepository userRepository, TokenService tokenService) {
+    public UserService(ImageRepository imageRepository ,UserRepository userRepository, TokenService tokenService) {
         this.userRepository = userRepository;
         this.tokenService = tokenService;
+        this.imageRepository= imageRepository;
     }
 
     @Override
@@ -72,6 +77,7 @@ public class UserService implements UserDetailsService {
 
         if (userRepository.findUserByEmail(userDto.getEmail()) == null) {
             User user = loadUserWithUserDto(userDto);
+            user.setProfilePicture(imageRepository.findByUrl("rest/profilepicture/1"));
             em.persist(user);
             return user;
         }
