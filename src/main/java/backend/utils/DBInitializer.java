@@ -174,7 +174,7 @@ public class DBInitializer {
                     r.nextBoolean(), r.nextBoolean(), r.nextBoolean(), r.nextBoolean(), myInterest, 18, 80);
     //Generating Users----------------------
             LocalDate birthDate = LocalDate.now().minusYears(18 + (new Random().nextInt(50)));
-            User user = new User("User" + i, "sajt", "User" + i + "@email.com", birthDate);
+            User user = new User("User" + i, "sajt", "user" + i + "@email.com", birthDate);
             user.setEnabled(true);
             user.setUserProfile(userProfile);
             user.setUserInterest(userInterest);
