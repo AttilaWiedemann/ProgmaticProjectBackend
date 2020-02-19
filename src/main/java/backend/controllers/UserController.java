@@ -16,11 +16,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 public class UserController {
+
+    @PersistenceContext
+    EntityManager em;
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private UserService userService;
@@ -57,9 +63,10 @@ public class UserController {
     @RequestMapping(path = ("/rest/getUser"), method = RequestMethod.GET)
     public UserProfileWithVisibleFields getUser(){
         try{
+            User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User currentUser = em.find(User.class, user.getId());
             UserProfileWithVisibleFields userProfileWithVisibleFields = userService.getUser(
-                    (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()
-
+                    currentUser
             );
             logger.info("Get User profile username: " + userProfileWithVisibleFields.getName());
             return userProfileWithVisibleFields;
