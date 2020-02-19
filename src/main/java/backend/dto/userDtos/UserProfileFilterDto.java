@@ -7,17 +7,10 @@ public class UserProfileFilterDto {
 
     private int minAge;
     private int maxAge;
-    private Gender lookingFor;  //TODO ez alapján enumot lehet majd csinálni
-    private int statingNumber;
-    private int endingNumber;   //nem a végszámmal, hanem a találatok számával kell majd a between lekérdezés
+    private Gender lookingFor;
+    private int numberPage;
+    final int numberSize = 8;
 
-    public UserProfileFilterDto(int minAge, int maxAge, Gender lookingFor, int statingNumber, int endingNumber) {
-        this.minAge = minAge;
-        this.maxAge = maxAge;
-        this.lookingFor = lookingFor;
-        this.statingNumber = statingNumber;
-        this.endingNumber = endingNumber;
-    }
 
     public UserProfileFilterDto(){}
 
@@ -45,19 +38,15 @@ public class UserProfileFilterDto {
         this.lookingFor = lookingFor;
     }
 
-    public int getStatingNumber() {
-        return statingNumber;
+    public int getNumberPage() {
+        return numberPage;
     }
 
-    public void setStatingNumber(int statingNumber) {
-        this.statingNumber = statingNumber;
+    public void setNumberPage(int numberPage) {
+        this.numberPage = numberPage;
     }
 
-    public int getEndingNumber() {
-        return endingNumber;
-    }
-
-    public void setEndingNumber(int endingNumber) {
-        this.endingNumber = endingNumber;
+    public int getNumberSize() {
+        return numberSize;
     }
 }

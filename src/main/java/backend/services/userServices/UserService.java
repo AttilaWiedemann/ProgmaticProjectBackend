@@ -5,6 +5,7 @@ import backend.dto.userDtos.UserProfileFilterDto;
 import backend.dto.userDtos.UserProfileWithVisibleFields;
 import backend.enums.*;
 import backend.exceptions.ExistingUserException;
+import backend.exceptions.NonExistingPageException;
 import backend.exceptions.NotAuthenticatedUserException;
 import backend.exceptions.NotExistingUserException;
 import backend.model.userModels.User;
@@ -81,9 +82,9 @@ public class UserService implements UserDetailsService {
     }
 
     //READ
+
     @Transactional
-    public UserProfileWithVisibleFields getUser() {
-        User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public UserProfileWithVisibleFields getUser(User user) {
         if (user != null){
             UserProfileWithVisibleFields userProfileWithVisibleFields = new UserProfileWithVisibleFields();
             addUserBaseDatas(userProfileWithVisibleFields, user);
@@ -99,24 +100,46 @@ public class UserService implements UserDetailsService {
 
     //default = 20db
     @Transactional
-    public List<UserProfileWithVisibleFields> listingExistingUsers(UserProfileFilterDto profileFilter) {
-
+    public List<UserProfileWithVisibleFields> listingExistingUsers(UserProfileFilterDto profileFilter)
+    throws NonExistingPageException
+    {
         LocalDate less = LocalDate.now().minusYears(profileFilter.getMinAge());
         LocalDate more =  LocalDate.now().minusYears(profileFilter.getMaxAge());
         List<User> userList = userRepository.findAllByBirthDateIsLessThanEqualAndBirthDateGreaterThanEqual(less, more);
-
         switch (profileFilter.getLookingFor()){
             case MAN:
-                return getResultList(userList.stream()
+                return breakToPages(
+                        profileFilter.getNumberPage(), profileFilter.getNumberSize(),
+                        getResultList(userList.stream()
+                        .filter(user -> user.getUserProfile() != null)
                         .filter(user -> user.getUserProfile().getGender().toString().equals("MAN"))
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toList())));
             case WOMAN:
-                return getResultList(userList.stream()
+                return breakToPages(
+                        profileFilter.getNumberPage(), profileFilter.getNumberSize(),
+                        getResultList(userList.stream()
+                        .filter(user -> user.getUserProfile() != null)
                         .filter(user -> user.getUserProfile().getGender().toString().equals("WOMAN"))
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toList())));
             default:
-                return getResultList(userList);
+                return breakToPages(
+                        profileFilter.getNumberPage(), profileFilter.getNumberSize(), getResultList(userList));
+
+
         }
+    }
+
+    private List<UserProfileWithVisibleFields> breakToPages(int pageNumber, int pageSize,
+                                            List<UserProfileWithVisibleFields> users) throws NonExistingPageException{
+        int startingIndex = (pageNumber -1) * pageSize;
+            if(startingIndex > users.size() - 1 || startingIndex < 0){
+                throw new NonExistingPageException("Result list does not have this many pages: " + pageNumber);
+            }
+        int endingIndex = startingIndex + pageSize;
+            if(endingIndex > users.size() - 1){
+                endingIndex = users.size() -1;
+            }
+        return users.subList(startingIndex, endingIndex);
     }
 
 
@@ -130,7 +153,7 @@ public class UserService implements UserDetailsService {
             long id = currentuser.getId();
             User user = em.find(User.class, id);
 
-            if (user.getUserProfile() == null || user.getUserInterest() == null){
+            if (user.getUserProfile() == null && user.getUserInterest() == null){
                 UserProfile userProfile = new UserProfile();
                 UserInterest userInterest = new UserInterest();
                 //UserProfile beállítása
@@ -178,7 +201,7 @@ public class UserService implements UserDetailsService {
     private List<UserProfileWithVisibleFields> getResultList(List<User> userList){
         List<UserProfileWithVisibleFields> returnableList = new ArrayList<>();
         for(User user : userList){
-            UserProfileWithVisibleFields userProfileWithVisibleFields = getUser();
+            UserProfileWithVisibleFields userProfileWithVisibleFields = getUser(user);
             returnableList.add(userProfileWithVisibleFields);
         }
         return returnableList;
@@ -187,10 +210,10 @@ public class UserService implements UserDetailsService {
     private void generateUserProfileForUser (UserProfile userProfile, UserProfileWithVisibleFields updatedProfile){
         userProfile.setAboutMe(updatedProfile.getAboutMe());
         userProfile.setCity(updatedProfile.getCity());
-        userProfile.setBodyShape(BodyShape.valueOf(updatedProfile.getBodyShape()));
-        userProfile.setEyeColor(EyeColor.valueOf(updatedProfile.getEyeColor()));
-        userProfile.setHairColor(HairColor.valueOf(updatedProfile.getHairColor()));
-        userProfile.setHoroscope(Horoscope.valueOf(updatedProfile.getHoroscopeEnum()));
+        userProfile.setBodyShape(updatedProfile.getBodyShape());
+        userProfile.setEyeColor(updatedProfile.getEyeColor());
+        userProfile.setHairColor(updatedProfile.getHairColor());
+        userProfile.setHoroscope(updatedProfile.getHoroscopeEnum());
         userProfile.setGender(updatedProfile.getGender());
         userProfile.setSmoking(updatedProfile.isSmoking());
     }
@@ -206,7 +229,7 @@ public class UserService implements UserDetailsService {
         userInterest.setPolitics(updatedProfile.isLikesPolitics());
         userInterest.setMinAge(updatedProfile.getMinAge());
         userInterest.setMaxAge(updatedProfile.getMaxAge());
-        userInterest.setInterest(Interest.valueOf(updatedProfile.getInterest()));
+        userInterest.setInterest(updatedProfile.getInterest());
     }
 
     private User loadUserWithUserDto(UserDto userDto){
@@ -230,10 +253,10 @@ public class UserService implements UserDetailsService {
             userProfileWithVisibleFields.setAboutMe(userProfile.getAboutMe());
             userProfileWithVisibleFields.setCity(userProfile.getCity());
             userProfileWithVisibleFields.setHeight(userProfile.getHeight());
-            userProfileWithVisibleFields.setBodyShape(userProfile.getBodyShape().toString());
-            userProfileWithVisibleFields.setEyeColor(userProfile.getEyeColor().toString());
-            userProfileWithVisibleFields.setHairColor(userProfile.getHairColor().toString());
-            userProfileWithVisibleFields.setHoroscopeEnum(userProfile.getHoroscope().toString());
+            userProfileWithVisibleFields.setBodyShape(userProfile.getBodyShape());
+            userProfileWithVisibleFields.setEyeColor(userProfile.getEyeColor());
+            userProfileWithVisibleFields.setHairColor(userProfile.getHairColor());
+            userProfileWithVisibleFields.setHoroscopeEnum(userProfile.getHoroscope());
             userProfileWithVisibleFields.setGender(userProfile.getGender());
             userProfileWithVisibleFields.setSmoking(userProfile.isSmoking());
         }
@@ -261,7 +284,7 @@ public class UserService implements UserDetailsService {
             userProfileWithVisibleFields.setLikesTravels(userInterest.isTravels());
             userProfileWithVisibleFields.setLikesTechnology(userInterest.isTechnology());
             userProfileWithVisibleFields.setLikesPolitics(userInterest.isPolitics());
-            userProfileWithVisibleFields.setInterest(userInterest.getInterest().toString());
+            userProfileWithVisibleFields.setInterest(userInterest.getInterest());
             userProfileWithVisibleFields.setMinAge(userInterest.getMinAge());
             userProfileWithVisibleFields.setMaxAge(userInterest.getMaxAge());
         }
