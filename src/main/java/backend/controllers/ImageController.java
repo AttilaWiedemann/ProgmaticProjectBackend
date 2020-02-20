@@ -1,8 +1,10 @@
 package backend.controllers;
 
 import backend.exceptions.NotValidFileException;
+import backend.model.imageModels.DefaultImage;
 import backend.model.imageModels.Image;
 import backend.model.userModels.User;
+import backend.repos.DefaultImageRepository;
 import backend.repos.ImageRepository;
 import backend.repos.UserRepository;
 import backend.services.imageServices.ImageService;
@@ -14,50 +16,57 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.util.Optional;
 
 
 @RestController
 public class ImageController {
     private ImageService imageService;
     private ImageRepository imageRepository;
+    private DefaultImageRepository defaultImageRepository;
     private UserRepository userRepository;
 
     @Autowired
-    public ImageController(UserRepository userRepository ,ImageService imageService , ImageRepository imageRepository) {
+    public ImageController(UserRepository userRepository ,DefaultImageRepository defaultImageRepository, ImageService imageService, ImageRepository imageRepository) {
         this.imageService = imageService;
         this.imageRepository = imageRepository;
+        this.defaultImageRepository = defaultImageRepository;
         this.userRepository = userRepository;
     }
 
 
-   @PostMapping("/rest/updatepicture")
-    public ResponseEntity updateProfilePicture(MultipartFile file){
+    @PostMapping("/rest/updatepicture")
+    public ResponseEntity updateProfilePicture(MultipartFile file) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-       try {
-           imageService.updateImageFile(file,user.getId());
-       } catch (IOException e) {
-           throw new NotValidFileException("Nem megfelelő képfájlt küldöttbe");
-       }
-       return new ResponseEntity(HttpStatus.OK);
-   }
+        imageService.updateImageFile(file, user.getId());
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
     @GetMapping(path = "/rest/profilpicture/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public String imageUrl(@PathVariable("id") Long id){
-        Image image = imageRepository.findByUserId(id);
-        return image.getUrl();
+    public String imageUrl(@PathVariable("id") Long id) {
+        if (id == 0) {
+            return "/rest/profilpicture/0";
+        } else {
+            Image image = imageRepository.findByUserId(id);
+            return image.getUrl();
+        }
+
     }
 
-    @GetMapping(path = "/rest/profilpicture/", produces = MediaType.IMAGE_JPEG_VALUE )
-    public byte[] profilePictureUrl(){
+    @GetMapping(path = "/rest/profilpicture/", produces = MediaType.IMAGE_JPEG_VALUE)
+    public String profilePictureUrl() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-       // return userRepository.findUserById(user.getId()).getProfilePicture().getUrl();
-
-        return imageRepository.findByUserId(user.getId()).getBytes();
+        if (user.isHaveProfilePicture()) {
+            return user.getProfilePicture().getUrl();
+        }else {
+            return "/rest/profilpicture/0";
+        }
     }
-    @GetMapping(path = "/rest/profilepicture/{id}")
-    public byte[] image(@PathVariable ("id")Long id){
-        return imageRepository.findById(id).get().getBytes();
+    @GetMapping(path = "/rest/loadprofilpicture/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] sendImage (@PathVariable ("id") Long id){
+        if (id==0){
+            return defaultImageRepository.findByUrl("/rest/loadprofilpicture/0").getBytes();
+        }
+       return imageRepository.findImageById(id).getBytes();
     }
-
 }

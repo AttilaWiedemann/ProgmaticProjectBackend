@@ -57,6 +57,15 @@ public class User implements UserDetails {
     @JoinColumn( name = "profilepicture_Id")
    private Image profilePicture;
 
+    private boolean isHaveProfilePicture;
+
+    public boolean isHaveProfilePicture() {
+        return isHaveProfilePicture;
+    }
+
+    public void setHaveProfilePicture(boolean haveProfilePicture) {
+        isHaveProfilePicture = haveProfilePicture;
+    }
 //    @ManyToOne()
 //    private List<Image> Pictures;
 

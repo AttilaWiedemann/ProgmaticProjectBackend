@@ -2,8 +2,10 @@ package backend.services.imageServices;
 
 import backend.exceptions.ExistingUserException;
 import backend.exceptions.NotValidFileException;
+import backend.model.imageModels.DefaultImage;
 import backend.model.imageModels.Image;
 import backend.model.userModels.User;
+import backend.repos.DefaultImageRepository;
 import backend.repos.ImageRepository;
 import backend.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,28 +24,30 @@ import java.nio.file.Path;
 public class ImageService {
     private ImageRepository imageRepository;
     private UserRepository userRepository;
+    private DefaultImageRepository defaultImageRepository;
 
     @PersistenceContext
     EntityManager em;
 
     @Autowired
-    public ImageService(ImageRepository imageRepository, UserRepository userRepository) {
+    public ImageService(ImageRepository imageRepository, UserRepository userRepository, DefaultImageRepository defaultImageRepository) {
         this.imageRepository = imageRepository;
         this.userRepository = userRepository;
+        this.defaultImageRepository = defaultImageRepository;
     }
 
-    @Transactional
-    public void setDefaultImageFile( Long id) {
-        User user = userRepository.findUserById(id);
-        user.setProfilePicture(imageRepository.findByUrl("rest/profilepicture/1"));
-        em.persist(user);
-    }
+//    @Transactional
+//    public void setDefaultImageFile( Long id) {
+//        User user = userRepository.findUserById(id);
+//        user.setProfilePicture(imageRepository.findByUrl("/rest/profilepicture/1"));
+//        em.persist(user);
+//    }
 
     @Transactional
     public void updateImageFile(MultipartFile file, Long id)  {
         byte[] byteObjects = convertToByte(file);
         User user = userRepository.findUserById(id);
-        if (!user.getProfilePicture().getUrl().equals("/rest/profilepicture/1")) {
+        if (!user.getProfilePicture().getUrl().equals("/rest/loadprofilpicture/0")) {
         imageRepository.deleteById(user.getProfilePicture().getId());
         }
         user.setProfilePicture(null);
@@ -70,10 +74,10 @@ public class ImageService {
             image.setUser(user);
             image.setBytes((byteObjects));
             em.persist(image);
-            image.setUrl("/rest/picture/" + user.getName());
-            image = imageRepository.findByUrl("/rest/picture/" + user.getName());
+            image.setUrl("/rest/loadprofilpicture/" + user.getName());
+            image = imageRepository.findByUrl("/rest/loadprofilpicture/" + user.getName());
             user.setProfilePicture(image);
-            image.setUrl("/rest/picture/" + image.getId());
+            image.setUrl("/rest/loadprofilpicture/" + image.getId());
             em.persist(image);
             em.persist(user);
         } else {
@@ -81,7 +85,14 @@ public class ImageService {
         }
 
     }
-    public byte[] convertToByte(File file)  {
+    public void saveDefaultPicture(File file){
+        byte[] byteObject = convertToByte(file);
+        DefaultImage defaultImage = new DefaultImage();
+        defaultImage.setBytes(byteObject);
+        defaultImage.setUrl("/rest/profilepicture/0");
+        em.persist(defaultImage);
+    }
+    private byte[] convertToByte(File file)  {
         byte[] byteObjects = new byte[0];
         try {
             byteObjects = Files.readAllBytes(file.toPath());

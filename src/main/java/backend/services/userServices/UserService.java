@@ -251,7 +251,11 @@ public class UserService implements UserDetailsService {
         userProfileWithVisibleFields.setId(user.getId());
         userProfileWithVisibleFields.setName(user.getName());
         userProfileWithVisibleFields.setBirthDate(user.getBirthDate());
-        userProfileWithVisibleFields.setImgUrl(user.getProfilePicture().getUrl());
+        if(user.isHaveProfilePicture()) {
+            userProfileWithVisibleFields.setImgUrl(user.getProfilePicture().getUrl());
+        }else{
+            userProfileWithVisibleFields.setImgUrl("/rest/loadprofilpicture/0");
+        }
     }
 
     private void addUserProfileDatas(UserProfileWithVisibleFields userProfileWithVisibleFields, User user) {

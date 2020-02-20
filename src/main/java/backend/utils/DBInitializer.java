@@ -138,11 +138,8 @@ public class DBInitializer {
             ArrayList<User> users = generateDummyUsers();
             Image image = new Image();
             File file = new File("src/DefaultProfilePicture.png");
-            image.setBytes( imageService.convertToByte(file));
-            image.setUrl("/rest/profilepicture/1");
-            em.persist(image);
+            imageService.saveDefaultPicture(file);
             for(User user : users){
-                user.setProfilePicture(image);
                 em.persist(user);
                 if(user.getUserProfile() != null) {
                     em.persist(user.getUserInterest());
