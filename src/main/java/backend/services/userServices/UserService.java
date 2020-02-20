@@ -145,6 +145,13 @@ public class UserService implements UserDetailsService {
             if(endingIndex > users.size() - 1){
                 endingIndex = users.size() -1;
             }
+        int numberOfPages = users.size() / pageSize;
+        if(numberOfPages % pageSize > 0){
+            numberOfPages++;
+        }
+        for(UserProfileWithVisibleFields profile : users){
+            profile.setNumberOfPages(numberOfPages);
+        }
         return users.subList(startingIndex, endingIndex);
     }
 
