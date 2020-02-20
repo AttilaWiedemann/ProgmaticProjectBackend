@@ -1,5 +1,6 @@
 package backend.controllers;
 
+import backend.exceptions.NotValidFileException;
 import backend.model.imageModels.Image;
 import backend.model.userModels.User;
 import backend.repos.ImageRepository;
@@ -29,27 +30,16 @@ public class ImageController {
         this.userRepository = userRepository;
     }
 
-//    @PostMapping("/rest/profilepicture")
-//    public ResponseEntity handleImagePost(MultipartFile file) {
-//        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        try {
-//            imageService.updateImageFile(file, user.getId());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            //TODO nem megfelelő képformátum
-//        }
-//        return new ResponseEntity(HttpStatus.OK);
-//    }
+
    @PostMapping("/rest/updatepicture")
     public ResponseEntity updateProfilePicture(MultipartFile file){
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
        try {
            imageService.updateImageFile(file,user.getId());
        } catch (IOException e) {
-           e.printStackTrace();
-           //TODO exeption létrehozás
+           throw new NotValidFileException("Nem megfelelő képfájlt küldöttbe");
        }
-    return new ResponseEntity(HttpStatus.OK);
+       return new ResponseEntity(HttpStatus.OK);
    }
 
     @GetMapping(path = "/rest/profilpicture/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
