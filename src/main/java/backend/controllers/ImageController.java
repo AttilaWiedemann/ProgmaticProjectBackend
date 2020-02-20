@@ -63,10 +63,12 @@ public class ImageController {
         }
     }
     @GetMapping(path = "/rest/loadprofilpicture/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public byte[] sendImage (@PathVariable ("id") Long id){
-        if (id==0){
-            return defaultImageRepository.findByUrl("/rest/loadprofilpicture/0").getBytes();
+    public byte[] sendImage (@PathVariable ("id") Long id) {
+        if (id.equals(0L)) {
+            return defaultImageRepository.findDefaultImageById(id).getBytes();
+        } else {
+            return imageRepository.findImageById(id).getBytes();
+
         }
-       return imageRepository.findImageById(id).getBytes();
     }
 }

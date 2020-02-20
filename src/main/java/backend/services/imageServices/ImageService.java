@@ -47,11 +47,12 @@ public class ImageService {
     public void updateImageFile(MultipartFile file, Long id)  {
         byte[] byteObjects = convertToByte(file);
         User user = userRepository.findUserById(id);
-        if (!user.getProfilePicture().getUrl().equals("/rest/loadprofilpicture/0")) {
+        if (user.isHaveProfilePicture()) {
         imageRepository.deleteById(user.getProfilePicture().getId());
         }
         user.setProfilePicture(null);
         saveImageFile(user,byteObjects);
+        user.setHaveProfilePicture(true);
     }
 
     public byte[] convertToByte(MultipartFile file) {
@@ -85,11 +86,13 @@ public class ImageService {
         }
 
     }
+    @Transactional
     public void saveDefaultPicture(File file){
         byte[] byteObject = convertToByte(file);
         DefaultImage defaultImage = new DefaultImage();
         defaultImage.setBytes(byteObject);
-        defaultImage.setUrl("/rest/profilepicture/0");
+        defaultImage.setUrl("/rest/loadprofilpicture/0");
+        defaultImage.setId(0L);
         em.persist(defaultImage);
     }
     private byte[] convertToByte(File file)  {

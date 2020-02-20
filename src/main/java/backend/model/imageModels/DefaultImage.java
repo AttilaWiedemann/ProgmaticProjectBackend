@@ -6,7 +6,6 @@ import javax.persistence.*;
 public class DefaultImage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
 
