@@ -34,11 +34,7 @@ public class ImageController {
    @PostMapping("/rest/updatepicture")
     public ResponseEntity updateProfilePicture(MultipartFile file){
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-       try {
-           imageService.updateImageFile(file,user.getId());
-       } catch (IOException e) {
-           throw new NotValidFileException("Nem megfelelő képfájlt küldöttbe");
-       }
+       imageService.updateImageFile(file,user.getId());
        return new ResponseEntity(HttpStatus.OK);
    }
 
