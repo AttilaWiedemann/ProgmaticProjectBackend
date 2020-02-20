@@ -32,6 +32,7 @@ public class UserProfileWithVisibleFields {
     private boolean likesTravels;
     private boolean likesPolitics;
     private int birthYear;
+    private int numberOfPages;
 
     public UserProfileWithVisibleFields(){}
     public UserProfileWithVisibleFields(LocalDate birthDate){
@@ -282,5 +283,13 @@ public class UserProfileWithVisibleFields {
 
     public int getBirthYear() {
         return birthYear;
+    }
+
+    public int getNumberOfPages() {
+        return numberOfPages;
+    }
+
+    public void setNumberOfPages(int numberOfPages) {
+        this.numberOfPages = numberOfPages;
     }
 }
