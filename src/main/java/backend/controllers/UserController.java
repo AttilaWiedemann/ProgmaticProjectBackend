@@ -76,6 +76,16 @@ public class UserController {
         }
     }
 
+    @RequestMapping(path = "/rest/getUser/{id}", method = RequestMethod.GET)
+    public UserProfileWithVisibleFields getById(@PathVariable("id") Long id){
+        try {
+            User user = em.find(User.class, id);
+            return userService.getUser(user);
+        }catch (NotAuthenticatedUserException ex){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+        }
+    }
+
     @RequestMapping(path = ("/rest/profiles"), method = RequestMethod.POST)
     public List<UserProfileWithVisibleFields> getUserList(@RequestBody UserProfileFilterDto filterDto){
         try {
