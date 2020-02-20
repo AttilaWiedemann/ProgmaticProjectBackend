@@ -43,7 +43,7 @@ public class ImageService {
     public void updateImageFile(MultipartFile file, Long id)  {
         byte[] byteObjects = convertToByte(file);
         User user = userRepository.findUserById(id);
-        if (!user.getProfilePicture().getUrl().equals("rest/profilepicture/1")) {
+        if (!user.getProfilePicture().getUrl().equals("/rest/profilepicture/1")) {
         imageRepository.deleteById(user.getProfilePicture().getId());
         }
         user.setProfilePicture(null);
