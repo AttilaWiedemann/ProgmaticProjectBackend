@@ -181,7 +181,7 @@ public class DBInitializer {
             users.add(user);
         }
     //Add unfinfished User------------------
-            User user = new User("UnfinishedUser", "sajt", "Unfinished@email.com",
+            User user = new User("UnfinishedUser", "sajt", "unfinished@email.com",
                     LocalDate.now().minusYears(20));
             user.setEnabled(true);
             users.add(user);
