@@ -1,6 +1,7 @@
 package backend.services.imageServices;
 
 import backend.exceptions.ExistingUserException;
+import backend.exceptions.NotValidFileException;
 import backend.model.imageModels.Image;
 import backend.model.userModels.User;
 import backend.repos.ImageRepository;
@@ -32,14 +33,14 @@ public class ImageService {
     }
 
     @Transactional
-    public void setDefaultImageFile( Long id) throws IOException {
+    public void setDefaultImageFile( Long id) {
         User user = userRepository.findUserById(id);
         user.setProfilePicture(imageRepository.findByUrl("rest/profilepicture/1"));
         em.persist(user);
     }
 
     @Transactional
-    public void updateImageFile(MultipartFile file, Long id) throws IOException {
+    public void updateImageFile(MultipartFile file, Long id)  {
         byte[] byteObjects = convertToByte(file);
         User user = userRepository.findUserById(id);
         if (!user.getProfilePicture().getUrl().equals("rest/profilepicture/1")) {
@@ -49,13 +50,16 @@ public class ImageService {
         saveImageFile(user,byteObjects);
     }
 
-    public byte[] convertToByte(MultipartFile file) throws IOException {
-        byte[] byteObjects = new byte[file.getBytes().length];
-
-        int i = 0;
-
-        for (byte b : file.getBytes()) {
-            byteObjects[i++] = b;
+    public byte[] convertToByte(MultipartFile file) {
+        byte[] byteObjects = new byte[0];
+        try {
+            byteObjects = new byte[file.getBytes().length];
+            int i = 0;
+            for (byte b : file.getBytes()) {
+                byteObjects[i++] = b;
+            }
+        } catch (IOException e) {
+            throw new NotValidFileException("A fájlt nem lehet bytera bontani");
         }
         return byteObjects;
     }
@@ -77,8 +81,13 @@ public class ImageService {
         }
 
     }
-    public byte[] convertToByte(File file) throws IOException {
-        byte[] byteObjects = Files.readAllBytes(file.toPath());
+    public byte[] convertToByte(File file)  {
+        byte[] byteObjects = new byte[0];
+        try {
+            byteObjects = Files.readAllBytes(file.toPath());
+        } catch (IOException e) {
+            throw new NotValidFileException("Nem megfelelő képfájl");
+        }
         return byteObjects;
     }
 }
