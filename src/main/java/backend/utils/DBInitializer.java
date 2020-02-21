@@ -137,7 +137,7 @@ public class DBInitializer {
              */
             ArrayList<User> users = generateDummyUsers();
             Image image = new Image();
-            File file = new File("src/DefaultProfilePicture.png");
+            File file = new File("src/DefaultImagePicture.jpg");
             imageService.saveDefaultPicture(file);
             for(User user : users){
                 em.persist(user);
